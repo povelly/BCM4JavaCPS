@@ -1,5 +1,7 @@
 package interfaces;
 
-public interface ManagementCI extends ManagementImplementationI {
+public interface ManagementCI extends ManagementImplementationI, SubscriptionImplementationI {
 
+	
+	
 }

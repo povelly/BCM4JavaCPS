@@ -1,6 +1,4 @@
-package message;
-
-import interfaces.MessageI;
+package interfaces;
 
 public interface MessageFilterI {
 	
