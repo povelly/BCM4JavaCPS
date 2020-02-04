@@ -1,27 +1,49 @@
 package components;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.ManagementCI;
 import interfaces.PublicationCI;
-import interfaces.PublisherServicesI;
-import port.PublisherServiceOutboundPort;
+import port.PublisherManagementOutboundPort;
+import port.PublisherPublicationOutboundPort;
 
 public class Publisher extends AbstractComponent {
 
-	protected PublisherServiceOutboundPort psop1;
-	protected PublisherServiceOutboundPort psop2;
+	protected PublisherPublicationOutboundPort ppop;
+	protected PublisherManagementOutboundPort pmop;
 	
-	public Publisher(String psop1URI, String psop2URI) throws Exception {
+	public Publisher(String pmopURI, String ppopURI) throws Exception {
 		super(1, 0);
-		this.addOfferedInterface(PublisherServicesI.class);
 		this.addRequiredInterface(ManagementCI.class);
 		this.addRequiredInterface(PublicationCI.class);
 
-		this.psop1 = new PublisherServiceOutboundPort(psop1URI, this);
-		this.psop1.publishPort();
-
-		this.psop2 = new PublisherServiceOutboundPort(psop2URI, this);
-		this.psop2.publishPort();
+		this.ppop = new PublisherPublicationOutboundPort(ppopURI, this);
+		this.ppop.publishPort();
+		
+		this.pmop = new PublisherManagementOutboundPort(pmopURI, this);
+		this.pmop.publishPort();
+	}
+	
+	@Override
+	public void shutdown() throws ComponentShutdownException {
+		try {
+			ppop.unpublishPort();
+			pmop.unpublishPort();
+		} catch (Exception e) {
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdown();
+	}
+	
+	@Override
+	public void shutdownNow() throws ComponentShutdownException {
+		try {
+			ppop.unpublishPort();
+			pmop.unpublishPort();
+		} catch (Exception e) {
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdownNow();
 	}
 	
 }
