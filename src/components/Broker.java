@@ -1,7 +1,12 @@
 package components;
 
+import java.util.Map;
+
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.annotations.OfferedInterfaces;
+import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ManagementCI;
 import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
@@ -14,19 +19,26 @@ import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
 import port.BrokerReceptionOutboundPort;
 
-public class Broker extends AbstractComponent implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
+@RequiredInterfaces(required = {ReceptionCI.class})
+@OfferedInterfaces(offered = {ManagementCI.class, PublicationCI.class})
+public class Broker extends AbstractComponent
+		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
 
 	protected BrokerReceptionOutboundPort brop;
 	protected BrokerManagementInboundPort bmip;
 	protected BrokerPublicationInboundPort bpip;
 
-	public Broker(String bropURI, String bmipURI, String bpipURI) throws Exception {
-		super(1, 0);
-		this.addRequiredInterface(ReceptionCI.class);
-		this.addOfferedInterface(ManagementCI.class);
-		this.addOfferedInterface(PublicationCI.class);
+	protected String bripURI;
+	
+	protected Map<String, String> subscribtions; // TODO ajouter filtre
 
-		this.brop = new BrokerReceptionOutboundPort(bropURI, this);
+	public Broker(String bripURI, String bmipURI, String bpipURI) throws Exception { // TODO verif pour bmipURI et bpipURI
+		super(1, 0);
+		assert bripURI != null;
+
+		this.bripURI = bripURI;
+
+		this.brop = new BrokerReceptionOutboundPort(this);
 		this.brop.publishPort();
 
 		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
@@ -35,7 +47,18 @@ public class Broker extends AbstractComponent implements ManagementImplementatio
 		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
 		this.bpip.publishPort();
 	}
-	
+
+	@Override
+	public void start() throws ComponentStartException {
+		super.start();
+//		TODO + doPortDisconnection dans finalize ou shutdown (on connecte seulement les ports des interfaces requises)
+//		try {
+//			this.doPortConnection(this.brop.getPortURI(), this.bripURI, ReceptionConnector.class.getCanonicalName());
+//		} catch (Exception e) {
+//			throw new ComponentStartException(e);
+//		}
+	}
+
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
@@ -47,7 +70,7 @@ public class Broker extends AbstractComponent implements ManagementImplementatio
 		}
 		super.shutdown();
 	}
-	
+
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		try {
@@ -63,19 +86,19 @@ public class Broker extends AbstractComponent implements ManagementImplementatio
 	@Override
 	public void createTopic(String topic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void createTopics(String[] topics) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void destroyTopic(String topic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -93,55 +116,53 @@ public class Broker extends AbstractComponent implements ManagementImplementatio
 	@Override
 	public void publish(MessageI m, String topic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void publish(MessageI m, String[] topics) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String topic) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {
-		// TODO Auto-generated method stub
-		
+		subscribtions.put(inboundPortURI, topic);
 	}
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
-		// TODO Auto-generated method stub
-		
+		for (String topic : topics)
+			subscribtions.put(inboundPortURI, topic);
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
-		// TODO Auto-generated method stub
-		
+		subscribtions.remove(inboundPortURI);
 	}
 
 }
