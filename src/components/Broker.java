@@ -2,6 +2,7 @@ package components;
 
 import java.util.Map;
 
+import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -30,25 +31,27 @@ import port.BrokerReceptionOutboundPort;
 public class Broker extends AbstractComponent
 		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
 
+	// ports du composant
 	protected BrokerReceptionOutboundPort brop;
 	protected BrokerManagementInboundPort bmip;
 	protected BrokerManagementInboundPort bmip2;
 	protected BrokerPublicationInboundPort bpip;
+	// uris pour les connections
+	protected String ripServerURI;
 
 	protected Map<String, String> subscribtions; // TODO ajouter filtre
 
-	// TODO verifiers le URI
-	public Broker(String bropURI, String bmipURI, String bmip2URI, String bpipURI) throws Exception {
+	public Broker(String bmipURI, String bmip2URI, String bpipURI, String ripServerURI) throws Exception {
 		super(1, 0);
 
 		// verifications
-		assert bropURI != null;
 		assert bmipURI != null;
 		assert bmip2URI != null;
 		assert bpipURI != null;
+		assert ripServerURI != null;
 
 		// creation ports
-		this.brop = new BrokerReceptionOutboundPort(bropURI, this);
+		this.brop = new BrokerReceptionOutboundPort(this);
 		this.brop.publishPort();
 
 		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
@@ -59,6 +62,9 @@ public class Broker extends AbstractComponent
 
 		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
 		this.bpip.publishPort();
+
+		// uris pour les connections
+		this.ripServerURI = ripServerURI;
 	}
 
 	/***********************************************************************
@@ -67,12 +73,11 @@ public class Broker extends AbstractComponent
 	 * 
 	 ***********************************************************************/
 
-	// TODO connecter le port sortant a un port entrant
 	@Override
 	public void start() throws ComponentStartException {
 		super.start();
 		try {
-			this.doPortConnection(this.brop.getPortURI(), ???, ReceptionConnector.class.getCanonicalName());
+			this.doPortConnection(this.brop.getPortURI(), ripServerURI, ReceptionConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e);
 		}

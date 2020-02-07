@@ -24,23 +24,30 @@ import port.PublisherPublicationOutboundPort;
 @RequiredInterfaces(required = { PublicationCI.class, ManagementCI.class })
 public class Publisher extends AbstractComponent implements PublicationsImplementationI, ManagementImplementationI {
 
-	// ports
+	// ports du composant
 	protected PublisherPublicationOutboundPort ppop;
 	protected PublisherManagementOutboundPort pmop;
+	// uris pour les connections
+	protected String pipServerURI;
+	protected String mipServerURI;
 
-	public Publisher(String pmopURI, String ppopURI) throws Exception {
+	public Publisher(String pipServerURI, String mipServerURI) throws Exception {
 		super(1, 0);
 
 		// verifications
-		assert ppopURI != null;
-		assert pmopURI != null;
+		assert pipServerURI != null;
+		assert mipServerURI != null;
 
 		// creations ports
-		this.ppop = new PublisherPublicationOutboundPort(ppopURI, this);
+		this.ppop = new PublisherPublicationOutboundPort(this);
 		this.ppop.publishPort();
 
-		this.pmop = new PublisherManagementOutboundPort(pmopURI, this);
+		this.pmop = new PublisherManagementOutboundPort(this);
 		this.pmop.publishPort();
+
+		// uris pour les connections
+		this.pipServerURI = pipServerURI;
+		this.mipServerURI = mipServerURI;
 	}
 
 	/***********************************************************************
@@ -54,11 +61,8 @@ public class Publisher extends AbstractComponent implements PublicationsImplemen
 		super.start();
 		// connection des ports
 		try {
-			// TODO modifier ca en connectant ports sortants sur port entrants
-			this.doPortConnection(this.ppop.getPortURI(), ???,
-					PublicationConnector.class.getCanonicalName());
-			this.doPortConnection(this.pmop.getPortURI(), ???,
-					ManagementConnector.class.getCanonicalName());
+			this.doPortConnection(this.ppop.getPortURI(), pipServerURI, PublicationConnector.class.getCanonicalName());
+			this.doPortConnection(this.pmop.getPortURI(), mipServerURI, ManagementConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException(e);
 		}

@@ -25,19 +25,25 @@ import port.SubscriberReceptionInboundPort;
 @OfferedInterfaces(offered = { ReceptionCI.class })
 public class Subscriber extends AbstractComponent implements ManagementImplementationI, ReceptionImplementationI {
 
+	// ports du composant
 	protected SubscriberManagementOutboundPort smop;
 	protected SubscriberReceptionInboundPort srip;
+	// uris pour les connections
+	protected String mipServerUri;
 
-	protected Subscriber(String smopURI, String sripURI) throws Exception {
+	protected Subscriber(String sripURI, String mipServerUri) throws Exception {
 		super(1, 0);
 
 		// verifications
-		assert smopURI != null;
 		assert sripURI != null;
+		assert mipServerUri != null;
 
 		// creation ports
-		this.smop = new SubscriberManagementOutboundPort(smopURI, this);
+		this.smop = new SubscriberManagementOutboundPort(this);
 		this.srip = new SubscriberReceptionInboundPort(sripURI, this);
+
+		// uris pour les connections
+		this.mipServerUri = mipServerUri;
 	}
 
 	/***********************************************************************
@@ -46,12 +52,12 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 	 * 
 	 ***********************************************************************/
 
-	// TODO connecter les port sortants
 	@Override
 	public void start() throws ComponentStartException {
 		super.start();
+		// connection des ports
 		try {
-			this.doPortConnection(smop.getPortURI(), ???, ManagementConnector.class.getCanonicalName());
+			this.doPortConnection(smop.getPortURI(), mipServerUri, ManagementConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			throw new ComponentStartException();
 		}
@@ -59,6 +65,7 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 
 	@Override
 	public void shutdown() throws ComponentShutdownException {
+		// deconnection des ports
 		try {
 			this.doPortDisconnection(smop.getPortURI());
 			this.doPortDisconnection(srip.getPortURI());
@@ -72,6 +79,7 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
+		// deconnection des ports
 		try {
 			this.doPortDisconnection(smop.getPortURI());
 			this.doPortDisconnection(srip.getPortURI());
@@ -85,6 +93,7 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 
 	@Override
 	public void finalise() throws Exception {
+		// depublication des ports
 		smop.unpublishPort();
 		srip.unpublishPort();
 		super.finalise();
