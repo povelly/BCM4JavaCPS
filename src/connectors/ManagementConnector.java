@@ -4,8 +4,13 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
 
+/**
+ * 
+ * @author Bello Velly
+ *
+ */
 public class ManagementConnector extends AbstractConnector implements ManagementCI {
-	
+
 	@Override
 	public void createTopic(String topic) {
 		((ManagementCI) this.offering).createTopic(topic);

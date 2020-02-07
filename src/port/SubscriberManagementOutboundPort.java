@@ -1,29 +1,32 @@
 package port;
 
-import components.Publisher;
+import components.Subscriber;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
 
 /**
- * Port de sortie du Publisher pour l'interface composant ManagementCI
+ * Port de sortie du Subscriber pour l'interface composant Management
  * 
  * @author Bello Velly
  *
  */
-public class PublisherManagementOutboundPort extends AbstractOutboundPort implements ManagementCI {
+public class SubscriberManagementOutboundPort extends AbstractOutboundPort implements ManagementCI {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
-	public PublisherManagementOutboundPort(ComponentI owner) throws Exception {
+	public SubscriberManagementOutboundPort(ComponentI owner) throws Exception {
 		super(ManagementCI.class, owner);
-		assert owner instanceof Publisher;
+		assert owner instanceof Subscriber;
 	}
 
-	public PublisherManagementOutboundPort(String uri, ComponentI owner) throws Exception {
+	public SubscriberManagementOutboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
-		assert owner instanceof Publisher;
+		assert owner instanceof Subscriber;
 	}
 
 	@Override
@@ -38,7 +41,7 @@ public class PublisherManagementOutboundPort extends AbstractOutboundPort implem
 
 	@Override
 	public void destroyTopic(String topic) {
-		((ManagementCI) this.connector).destroyTopic(topic);
+		((ManagementCI) this.connector).createTopic(topic);
 	}
 
 	@Override

@@ -6,6 +6,12 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
 
+/**
+ * Port d'entrée du Broker pour l'interface composant ManagementCI
+ * 
+ * @author Bello Velly
+ *
+ */
 public class BrokerManagementInboundPort extends AbstractInboundPort implements ManagementCI {
 
 	private static final long serialVersionUID = 1L;
@@ -14,11 +20,14 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		super(ManagementCI.class, owner);
 		assert owner instanceof Broker;
 	}
-	
+
 	public BrokerManagementInboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
 		assert owner instanceof Broker;
 	}
+
+	// TODO modifier les méthodes pour quelles fassent des handle request synchrone
+	// / asynchrone en fonction
 
 	@Override
 	public void createTopic(String topic) {

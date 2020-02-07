@@ -19,52 +19,76 @@ import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
 import port.BrokerReceptionOutboundPort;
 
-@RequiredInterfaces(required = {ReceptionCI.class})
-@OfferedInterfaces(offered = {ManagementCI.class, PublicationCI.class})
+/**
+ * Classe representant le composant courtier
+ * 
+ * @author Bello Velly
+ */
+
+@RequiredInterfaces(required = { ReceptionCI.class })
+@OfferedInterfaces(offered = { ManagementCI.class, PublicationCI.class })
 public class Broker extends AbstractComponent
 		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
 
 	protected BrokerReceptionOutboundPort brop;
 	protected BrokerManagementInboundPort bmip;
+	protected BrokerManagementInboundPort bmip2;
 	protected BrokerPublicationInboundPort bpip;
 
-	protected String bripURI;
-	
 	protected Map<String, String> subscribtions; // TODO ajouter filtre
 
-	public Broker(String bripURI, String bmipURI, String bpipURI) throws Exception { // TODO verif pour bmipURI et bpipURI
+	// TODO verifiers le URI
+	public Broker(String bropURI, String bmipURI, String bmip2URI, String bpipURI) throws Exception {
 		super(1, 0);
-		assert bripURI != null;
 
-		this.bripURI = bripURI;
+		// verifications
+		assert bropURI != null;
+		assert bmipURI != null;
+		assert bmip2URI != null;
+		assert bpipURI != null;
 
-		this.brop = new BrokerReceptionOutboundPort(this);
+		// creation ports
+		this.brop = new BrokerReceptionOutboundPort(bropURI, this);
 		this.brop.publishPort();
 
 		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
 		this.bmip.publishPort();
 
+		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this);
+		this.bmip2.publishPort();
+
 		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
 		this.bpip.publishPort();
 	}
 
+	/***********************************************************************
+	 * 
+	 * CYCLE DE VIE
+	 * 
+	 ***********************************************************************/
+
+	// TODO connecter le port sortant a un port entrant
 	@Override
 	public void start() throws ComponentStartException {
 		super.start();
-//		TODO + doPortDisconnection dans finalize ou shutdown (on connecte seulement les ports des interfaces requises)
-//		try {
-//			this.doPortConnection(this.brop.getPortURI(), this.bripURI, ReceptionConnector.class.getCanonicalName());
-//		} catch (Exception e) {
-//			throw new ComponentStartException(e);
-//		}
+		try {
+			this.doPortConnection(this.brop.getPortURI(), ???, ReceptionConnector.class.getCanonicalName());
+		} catch (Exception e) {
+			throw new ComponentStartException(e);
+		}
 	}
 
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
-			brop.unpublishPort();
-			bmip.unpublishPort();
-			bpip.unpublishPort();
+			this.doPortDisconnection(brop.getPortURI());
+			this.doPortDisconnection(bmip.getPortURI());
+			this.doPortDisconnection(bmip2.getPortURI());
+			this.doPortDisconnection(bpip.getPortURI());
+			brop.doDisconnection();
+			bmip.doDisconnection();
+			bmip2.doDisconnection();
+			bpip.doDisconnection();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -74,14 +98,37 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		try {
-			brop.unpublishPort();
-			bmip.unpublishPort();
-			bpip.unpublishPort();
+			this.doPortDisconnection(brop.getPortURI());
+			this.doPortDisconnection(bmip.getPortURI());
+			this.doPortDisconnection(bmip2.getPortURI());
+			this.doPortDisconnection(bpip.getPortURI());
+			brop.doDisconnection();
+			bmip.doDisconnection();
+			bmip2.doDisconnection();
+			bpip.doDisconnection();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdownNow();
 	}
+
+	@Override
+	public void finalise() throws Exception {
+		// on dépublie les ports
+		brop.unpublishPort();
+		bmip.unpublishPort();
+		bmip2.unpublishPort();
+		bpip.unpublishPort();
+		super.finalise();
+	}
+
+	/***********************************************************************
+	 * 
+	 * IMPLANTATIONS DE SERVICES
+	 * 
+	 ***********************************************************************/
+
+	// TODO implementer les services
 
 	@Override
 	public void createTopic(String topic) {

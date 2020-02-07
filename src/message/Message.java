@@ -1,17 +1,24 @@
 package message;
+
 import java.io.Serializable;
 
 import interfaces.MessageI;
 
+/**
+ * Classe representant un Message
+ * 
+ * @author Bello Velly
+ *
+ */
 public class Message implements MessageI {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String URI;
 	private TimeStamp timeStamp;
 	private Properties properties;
 	private Serializable payload;
-	
+
 	@Override
 	public String getURI() {
 		return URI;

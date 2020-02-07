@@ -4,6 +4,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe representant un ensemble de propriétés
+ * 
+ * @author Bello Velly
+ *
+ */
 public class Properties implements Serializable {
 
 	private static final long serialVersionUID = 1L;

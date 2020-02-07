@@ -4,6 +4,12 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
 
+/**
+ * Classe representant le connecteur de publication
+ * 
+ * @author Bello Velly
+ *
+ */
 public class PublicationConnector extends AbstractConnector implements PublicationCI {
 
 	@Override

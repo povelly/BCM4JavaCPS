@@ -6,6 +6,12 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
 
+/**
+ * Port d'entrée du Broker pour l'interface composant PublicationCI
+ * 
+ * @author Bello Velly
+ *
+ */
 public class BrokerPublicationInboundPort extends AbstractInboundPort implements PublicationCI {
 
 	private static final long serialVersionUID = 1L;
@@ -14,11 +20,14 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 		super(PublicationCI.class, owner);
 		assert owner instanceof Broker;
 	}
-	
+
 	public BrokerPublicationInboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, PublicationCI.class, owner);
 		assert owner instanceof Broker;
 	}
+
+	// TODO modifier les méthodes pour quelles fassent des handle request synchrone
+	// / asynchrone en fonction
 
 	@Override
 	public void publish(MessageI m, String topic) {
@@ -39,6 +48,5 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	public void publish(MessageI[] ms, String[] topics) {
 		((Broker) owner).publish(ms, topics);
 	}
-
 
 }
