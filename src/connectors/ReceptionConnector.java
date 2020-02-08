@@ -13,12 +13,12 @@ import interfaces.ReceptionCI;
 public class ReceptionConnector extends AbstractConnector implements ReceptionCI {
 
 	@Override
-	public void acceptMessage(MessageI m) {
+	public void acceptMessage(MessageI m) throws Exception {
 		((ReceptionCI) this.offering).acceptMessage(m);
 	}
 
 	@Override
-	public void acceptMessage(MessageI[] ms) {
+	public void acceptMessage(MessageI[] ms) throws Exception {
 		((ReceptionCI) this.offering).acceptMessage(ms);
 	}
 

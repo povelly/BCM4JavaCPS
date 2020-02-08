@@ -27,22 +27,22 @@ public class PublisherPublicationOutboundPort extends AbstractOutboundPort imple
 	}
 
 	@Override
-	public void publish(MessageI m, String topic) {
+	public void publish(MessageI m, String topic) throws Exception {
 		((PublicationCI) this.connector).publish(m, topic);
 	}
 
 	@Override
-	public void publish(MessageI m, String[] topics) {
+	public void publish(MessageI m, String[] topics) throws Exception {
 		((PublicationCI) this.connector).publish(m, topics);
 	}
 
 	@Override
-	public void publish(MessageI[] ms, String topic) {
+	public void publish(MessageI[] ms, String topic) throws Exception {
 		((PublicationCI) this.connector).publish(ms, topic);
 	}
 
 	@Override
-	public void publish(MessageI[] ms, String[] topics) {
+	public void publish(MessageI[] ms, String[] topics) throws Exception {
 		((PublicationCI) this.connector).publish(ms, topics);
 	}
 

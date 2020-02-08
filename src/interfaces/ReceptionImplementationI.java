@@ -8,8 +8,8 @@ package interfaces;
  */
 public interface ReceptionImplementationI {
 
-	public void acceptMessage(MessageI m);
+	public void acceptMessage(MessageI m) throws Exception;
 
-	public void acceptMessage(MessageI[] ms);
+	public void acceptMessage(MessageI[] ms) throws Exception;
 
 }

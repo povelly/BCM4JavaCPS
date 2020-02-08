@@ -27,12 +27,12 @@ public class BrokerReceptionOutboundPort extends AbstractOutboundPort implements
 	}
 
 	@Override
-	public void acceptMessage(MessageI m) {
+	public void acceptMessage(MessageI m) throws Exception {
 		((ReceptionCI) this.connector).acceptMessage(m);
 	}
 
 	@Override
-	public void acceptMessage(MessageI[] ms) {
+	public void acceptMessage(MessageI[] ms) throws Exception {
 		((ReceptionCI) this.connector).acceptMessage(ms);
 	}
 

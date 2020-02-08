@@ -30,52 +30,52 @@ public class SubscriberManagementOutboundPort extends AbstractOutboundPort imple
 	}
 
 	@Override
-	public void createTopic(String topic) {
+	public void createTopic(String topic) throws Exception {
 		((ManagementCI) this.connector).createTopic(topic);
 	}
 
 	@Override
-	public void createTopics(String[] topics) {
+	public void createTopics(String[] topics) throws Exception {
 		((ManagementCI) this.connector).createTopics(topics);
 	}
 
 	@Override
-	public void destroyTopic(String topic) {
+	public void destroyTopic(String topic) throws Exception {
 		((ManagementCI) this.connector).createTopic(topic);
 	}
 
 	@Override
-	public boolean isTopic(String topic) {
+	public boolean isTopic(String topic) throws Exception {
 		return ((ManagementCI) this.connector).isTopic(topic);
 	}
 
 	@Override
-	public String[] getTopics() {
+	public String[] getTopics() throws Exception {
 		return ((ManagementCI) this.connector).getTopics();
 	}
 
 	@Override
-	public void subscribe(String topic, String inboundPortURI) {
+	public void subscribe(String topic, String inboundPortURI) throws Exception {
 		((ManagementCI) this.connector).subscribe(topic, inboundPortURI);
 	}
 
 	@Override
-	public void subscribe(String[] topics, String inboundPortURI) {
+	public void subscribe(String[] topics, String inboundPortURI) throws Exception {
 		((ManagementCI) this.connector).subscribe(topics, inboundPortURI);
 	}
 
 	@Override
-	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
+	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) throws Exception {
 		((ManagementCI) this.connector).subscribe(topic, filter, inboundPortURI);
 	}
 
 	@Override
-	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
+	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) throws Exception {
 		((ManagementCI) this.connector).modifyFilter(topic, newFilter, inboundPortURI);
 	}
 
 	@Override
-	public void unsubscribe(String topic, String inboundPortURI) {
+	public void unsubscribe(String topic, String inboundPortURI) throws Exception {
 		((ManagementCI) this.connector).unsubscribe(topic, inboundPortURI);
 	}
 

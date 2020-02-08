@@ -41,7 +41,7 @@ public class Broker extends AbstractComponent
 
 	protected Map<String, String> subscribtions; // TODO ajouter filtre
 
-	public Broker(String bmipURI, String bmip2URI, String bpipURI, String ripServerURI) throws Exception {
+	protected Broker(String bmipURI, String bmip2URI, String bpipURI, String ripServerURI) throws Exception {
 		super(1, 0);
 		// verifications
 		assert bmipURI != null;

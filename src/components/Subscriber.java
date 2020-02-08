@@ -40,7 +40,10 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 
 		// creation ports
 		this.smop = new SubscriberManagementOutboundPort(this);
+		this.smop.publishPort();
+
 		this.srip = new SubscriberReceptionInboundPort(sripURI, this);
+		this.srip.publishPort();
 
 		// uris pour les connections
 		this.mipServerUri = mipServerUri;

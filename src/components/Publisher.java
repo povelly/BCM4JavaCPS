@@ -31,7 +31,7 @@ public class Publisher extends AbstractComponent implements PublicationsImplemen
 	protected String pipServerURI;
 	protected String mipServerURI;
 
-	public Publisher(String pipServerURI, String mipServerURI) throws Exception {
+	protected Publisher(String pipServerURI, String mipServerURI) throws Exception {
 		super(1, 0);
 
 		// verifications
