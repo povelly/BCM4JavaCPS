@@ -43,7 +43,6 @@ public class Broker extends AbstractComponent
 
 	public Broker(String bmipURI, String bmip2URI, String bpipURI, String ripServerURI) throws Exception {
 		super(1, 0);
-
 		// verifications
 		assert bmipURI != null;
 		assert bmip2URI != null;
