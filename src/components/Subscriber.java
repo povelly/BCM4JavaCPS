@@ -72,8 +72,6 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 		try {
 			this.doPortDisconnection(smop.getPortURI());
 			this.doPortDisconnection(srip.getPortURI());
-			smop.doDisconnection();
-			srip.doDisconnection();
 		} catch (Exception e) {
 			throw new ComponentShutdownException();
 		}
@@ -86,8 +84,6 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 		try {
 			this.doPortDisconnection(smop.getPortURI());
 			this.doPortDisconnection(srip.getPortURI());
-			smop.doDisconnection();
-			srip.doDisconnection();
 		} catch (Exception e) {
 			throw new ComponentShutdownException();
 		}
