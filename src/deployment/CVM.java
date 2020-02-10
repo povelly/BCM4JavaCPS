@@ -26,7 +26,7 @@ public class CVM extends AbstractCVM {
 
 		// creation des composants
 		AbstractComponent.createComponent(Broker.class.getCanonicalName(),
-				new Object[] { brokerMIP_uri, brokerMIP2_uri, brokerPIP_uri, subscriberRIP_uri });
+				new Object[] { brokerMIP_uri, brokerMIP2_uri, brokerPIP_uri });
 		AbstractComponent.createComponent(Subscriber.class.getCanonicalName(),
 				new Object[] { subscriberRIP_uri, brokerMIP_uri });
 		AbstractComponent.createComponent(Publisher.class.getCanonicalName(),

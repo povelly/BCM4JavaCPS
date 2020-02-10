@@ -50,6 +50,11 @@ public class PublisherManagementOutboundPort extends AbstractOutboundPort implem
 	public String[] getTopics() throws Exception {
 		return ((ManagementCI) this.connector).getTopics();
 	}
+	
+	@Override
+	public String getPublicationPortURI() throws Exception {
+		return ((ManagementCI) this.connector).getPublicationPortURI();
+	}
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) throws Exception {

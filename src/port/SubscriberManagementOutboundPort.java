@@ -14,9 +14,6 @@ import interfaces.MessageFilterI;
  */
 public class SubscriberManagementOutboundPort extends AbstractOutboundPort implements ManagementCI {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public SubscriberManagementOutboundPort(ComponentI owner) throws Exception {
@@ -52,6 +49,11 @@ public class SubscriberManagementOutboundPort extends AbstractOutboundPort imple
 	@Override
 	public String[] getTopics() throws Exception {
 		return ((ManagementCI) this.connector).getTopics();
+	}
+
+	@Override
+	public String getPublicationPortURI() throws Exception {
+		return ((ManagementCI) this.connector).getPublicationPortURI();
 	}
 
 	@Override

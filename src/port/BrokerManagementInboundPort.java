@@ -53,6 +53,11 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	public String[] getTopics() {
 		return ((Broker) owner).getTopics();
 	}
+	
+	@Override
+	public String getPublicationPortURI() throws Exception {
+		return ((Broker) owner).getPublicationPortURI();
+	}
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {

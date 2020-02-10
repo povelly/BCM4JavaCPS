@@ -10,6 +10,7 @@ import interfaces.ManagementCI;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
 import interfaces.PublicationsImplementationI;
+import message.Message;
 import port.PublisherManagementOutboundPort;
 import port.PublisherPublicationOutboundPort;
 
@@ -65,6 +66,13 @@ public class Publisher extends AbstractComponent implements PublicationsImplemen
 		} catch (Exception e) {
 			throw new ComponentStartException(e);
 		}
+	}
+	
+	@Override
+	public void execute() throws Exception {
+		super.execute();
+		
+		this.publish(new Message(null, "msg1"), "topic1");
 	}
 
 	@Override

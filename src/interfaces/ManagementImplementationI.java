@@ -17,5 +17,7 @@ public interface ManagementImplementationI {
 	public boolean isTopic(String topic) throws Exception;
 
 	public String[] getTopics() throws Exception;
+	
+	public String getPublicationPortURI() throws Exception;
 
 }

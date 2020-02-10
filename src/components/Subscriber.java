@@ -7,10 +7,11 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ManagementCI;
-import interfaces.ManagementImplementationI;
+import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
 import interfaces.ReceptionImplementationI;
+import interfaces.SubscriptionImplementationI;
 import port.SubscriberManagementOutboundPort;
 import port.SubscriberReceptionInboundPort;
 
@@ -23,7 +24,7 @@ import port.SubscriberReceptionInboundPort;
 
 @RequiredInterfaces(required = { ManagementCI.class })
 @OfferedInterfaces(offered = { ReceptionCI.class })
-public class Subscriber extends AbstractComponent implements ManagementImplementationI, ReceptionImplementationI {
+public class Subscriber extends AbstractComponent implements ReceptionImplementationI {
 
 	// ports du composant
 	protected SubscriberManagementOutboundPort smop;
@@ -65,6 +66,12 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 			throw new ComponentStartException();
 		}
 	}
+	
+	@Override
+	public void execute() throws Exception {
+		super.execute();	
+		((SubscriberManagementOutboundPort) smop.getConnector()).subscribe("topic1", srip.getPortURI());
+	}
 
 	@Override
 	public void shutdown() throws ComponentShutdownException {
@@ -103,49 +110,24 @@ public class Subscriber extends AbstractComponent implements ManagementImplement
 	 * IMPLANTATIONS DE SERVICES
 	 * 
 	 ***********************************************************************/
-
-	// TODO implementer les services
-
+	
 	@Override
 	public void acceptMessage(MessageI m) {
-		// TODO Auto-generated method stub
-
+		try {
+			System.out.println("PortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void acceptMessage(MessageI[] ms) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void createTopic(String topic) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void createTopics(String[] topics) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void destroyTopic(String topic) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isTopic(String topic) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String[] getTopics() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			for (MessageI m : ms)
+				System.out.println("PortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

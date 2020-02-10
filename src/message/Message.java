@@ -19,6 +19,13 @@ public class Message implements MessageI {
 	private Properties properties;
 	private Serializable payload;
 
+	public Message(Properties properties, Serializable payload) {
+		this.URI = "URI1"; // TODO
+		this.timeStamp = new TimeStamp(); // TODO
+		this.properties = properties;
+		this.payload = payload;
+	}
+
 	@Override
 	public String getURI() {
 		return URI;
