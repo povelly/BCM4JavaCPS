@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
@@ -31,12 +31,12 @@ import port.BrokerReceptionOutboundPort;
 public class Broker extends AbstractComponent implements ManagementCI, PublicationCI {
 
 	// ports du composant
-	// protected BrokerReceptionOutboundPort brop;
 	protected List<BrokerReceptionOutboundPort> brops = new ArrayList<>();
 	protected BrokerManagementInboundPort bmip;
 	protected BrokerManagementInboundPort bmip2;
 	protected BrokerPublicationInboundPort bpip;
 
+	// Map<identifiant du topic, Topic>
 	protected Map<String, Topic> topics = new HashMap<>();
 
 	protected Broker(String bmipURI, String bmip2URI, String bpipURI) throws Exception {
@@ -135,8 +135,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void destroyTopic(String topic) {
-		if (isTopic(topic))
-			messages.remove(topic);
+		topics.remove(topic);
 	}
 
 	@Override
@@ -146,7 +145,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public String[] getTopics() {
-		return (String[]) messages.keySet().toArray();
+		return (String[]) topics.keySet().toArray();
 	}
 
 	@Override
@@ -156,14 +155,16 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void publish(MessageI m, String topic) {
-		this.createTopic(topic);
+		this.createTopic(topic); // crée le topic s'il n'existe pas
 		topics.get(topic).addMessage(m);
+		// transmet le messages au abonnés
 
-		for (Entry<String, MessageFilterI> subscription : topics.get(topic).getSubscriptions().entrySet()) {
+		for (String subscriber : topics.get(topic).getSubscribers()) {
 			for (BrokerReceptionOutboundPort brop : brops) {
 				try {
-					if (brop.getPortURI().equals(subscription.getKey()) && subscription.getValue().filter(m)) {
-						((BrokerReceptionOutboundPort) brop.getConnector()).acceptMessage(m);
+					if (brop.getClientPortURI().equals(subscriber)
+							&& topics.get(topic).getFilter(subscriber).filter(m)) {
+						((ReceptionConnector) brop.getConnector()).acceptMessage(m);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -230,14 +231,21 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	}
 
 	@Override
+	/**
+	 * Quand quelqu'un souscrit, on créer un port pour pouvoir le contacter
+	 */
 	public void subscribe(String topic, String inboundPortURI) {
-		if (!subscriptions.containsKey(topic))
-			subscriptions.put(topic, new HashMap<>());
-		subscriptions.get(topic).put(inboundPortURI, null);
+		// si le topic n'existe pas, on l'ajoute
+		if (!topics.containsKey(topic))
+			topics.put(topic, new Topic());
+		// on ajoute le subscriber au topic
+		topics.get(topic).addSubscription(inboundPortURI, null);
+		// on créer un port sortant et le lie a celui du subscriber
 		try {
-			BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(inboundPortURI, this);
+			BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
 			brop.publishPort();
 			brops.add(brop);
+			this.doPortConnection(brop.getPortURI(), inboundPortURI, ReceptionConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -267,12 +275,32 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
-		subscriptions.get(topic).put(inboundPortURI, newFilter);
+		Topic t = topics.get(topic);
+		if (t != null) {
+			t.updateFilter(inboundPortURI, newFilter);
+		}
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
-		subscriptions.get(topic).remove(inboundPortURI);
+		Topic t = topics.get(topic);
+		if (t != null) {
+			t.removeSubscriber(inboundPortURI);
+			// on supprime le port lié au client
+			brops.removeIf(brop -> {
+				try {
+					if (brop.getClientPortURI().equals(inboundPortURI)) {
+						this.doPortDisconnection(brop.getPortURI());
+						brop.unpublishPort();
+						return true;
+					}
+					return false;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+			});
+		}
 	}
 
 }

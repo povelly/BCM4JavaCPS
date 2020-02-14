@@ -71,6 +71,7 @@ public class Publisher extends AbstractComponent {
 		super.execute();
 		// on envoie un message de test
 		((PublicationConnector) ppop.getConnector()).publish(new Message(null, "msg1"), "topic1");
+		System.out.println("published");
 	}
 
 	@Override
