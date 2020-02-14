@@ -6,19 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.ManagementCI;
-import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
-import interfaces.PublicationsImplementationI;
 import interfaces.ReceptionCI;
-import interfaces.SubscriptionImplementationI;
 import message.Topic;
 import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
@@ -131,10 +127,10 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void createTopics(String[] topics) {
-		for (String topic : topics) {
-			if (!isTopic(topic))
-				topics.put(topic, new()); // TODO
-		}
+//		for (String topic : topics) {
+//			if (!isTopic(topic))
+//				topics.put(topic, new()); // TODO
+//		}
 	}
 
 	@Override
@@ -179,7 +175,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	@Override
 	public void publish(MessageI m, String[] topics) { // TODO on peut recevoir plusieurs fois le mm msg dans des topics
 														// differents
-		this.createTopics(topics);
+//		this.createTopics(topics);
 
 		// for (String topic : topics) {
 		// messages.get(topic).add(m);
@@ -200,9 +196,9 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void publish(MessageI[] ms, String topic) {
-		this.createTopic(topic);
-		for (MessageI m : ms)
-			messages.get(topic).add(m);
+//		this.createTopic(topic);
+//		for (MessageI m : ms)
+//			messages.get(topic).add(m);
 		//
 		// for (Entry<String, MessageFilterI> topicSubscription :
 		// subscriptions.get(topic).entrySet()) {
@@ -223,13 +219,13 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	@Override
 	public void publish(MessageI[] ms, String[] topics) { // TODO mm pb plusieurs notifs sur le mm msg avec topics
 															// differents
-		this.createTopics(topics);
-		for (String topic : topics) {
-			for (MessageI m : ms) {
-				messages.get(topic).add(m);
-
-			}
-		}
+//		this.createTopics(topics);
+//		for (String topic : topics) {
+//			for (MessageI m : ms) {
+//				messages.get(topic).add(m);
+//
+//			}
+//		}
 
 	}
 
@@ -249,24 +245,24 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
-		for (String topic : topics) {
-			subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
-				private static final long serialVersionUID = 1L;
-				{
-					put(inboundPortURI, null);
-				}
-			});
-		}
+//		for (String topic : topics) {
+//			subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
+//				private static final long serialVersionUID = 1L;
+//				{
+//					put(inboundPortURI, null);
+//				}
+//			});
+//		}
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
-		subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put(inboundPortURI, filter);
-			}
-		});
+//		subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
+//			private static final long serialVersionUID = 1L;
+//			{
+//				put(inboundPortURI, filter);
+//			}
+//		});
 	}
 
 	@Override
