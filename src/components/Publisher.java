@@ -7,9 +7,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ManagementCI;
-import interfaces.MessageI;
 import interfaces.PublicationCI;
-import interfaces.PublicationsImplementationI;
 import message.Message;
 import port.PublisherManagementOutboundPort;
 import port.PublisherPublicationOutboundPort;
@@ -22,7 +20,7 @@ import port.PublisherPublicationOutboundPort;
  */
 
 @RequiredInterfaces(required = { PublicationCI.class, ManagementCI.class })
-public class Publisher extends AbstractComponent implements PublicationsImplementationI {
+public class Publisher extends AbstractComponent {
 
 	// ports du composant
 	protected PublisherPublicationOutboundPort ppop;
@@ -67,12 +65,12 @@ public class Publisher extends AbstractComponent implements PublicationsImplemen
 			throw new ComponentStartException(e);
 		}
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
 		super.execute();
-		
-		this.publish(new Message(null, "msg1"), "topic1");
+		// on envoie un message de test
+		((PublicationConnector) ppop.getConnector()).publish(new Message(null, "msg1"), "topic1");
 	}
 
 	@Override
@@ -112,41 +110,5 @@ public class Publisher extends AbstractComponent implements PublicationsImplemen
 	 * IMPLANTATIONS DE SERVICES
 	 * 
 	 ***********************************************************************/
-
-	@Override
-	public void publish(MessageI m, String topic) {
-		try {
-			((PublicationConnector) ppop.getConnector()).publish(m, topic);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void publish(MessageI m, String[] topics) {
-		try {
-			((PublicationConnector) ppop.getConnector()).publish(m, topics);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void publish(MessageI[] ms, String topic) {
-		try {
-			((PublicationConnector) ppop.getConnector()).publish(ms, topic);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void publish(MessageI[] ms, String[] topics) {
-		try {
-			((PublicationConnector) ppop.getConnector()).publish(ms, topics);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 }

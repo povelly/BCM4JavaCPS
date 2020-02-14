@@ -7,11 +7,8 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ManagementCI;
-import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
-import interfaces.ReceptionImplementationI;
-import interfaces.SubscriptionImplementationI;
 import port.SubscriberManagementOutboundPort;
 import port.SubscriberReceptionInboundPort;
 
@@ -24,7 +21,7 @@ import port.SubscriberReceptionInboundPort;
 
 @RequiredInterfaces(required = { ManagementCI.class })
 @OfferedInterfaces(offered = { ReceptionCI.class })
-public class Subscriber extends AbstractComponent implements ReceptionImplementationI {
+public class Subscriber extends AbstractComponent implements ReceptionCI {
 
 	// ports du composant
 	protected SubscriberManagementOutboundPort smop;
@@ -66,10 +63,10 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 			throw new ComponentStartException();
 		}
 	}
-	
+
 	@Override
 	public void execute() throws Exception {
-		super.execute();	
+		super.execute();
 		((SubscriberManagementOutboundPort) smop.getConnector()).subscribe("topic1", srip.getPortURI());
 	}
 
@@ -110,7 +107,7 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	 * IMPLANTATIONS DE SERVICES
 	 * 
 	 ***********************************************************************/
-	
+
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {

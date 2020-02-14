@@ -32,8 +32,7 @@ import port.BrokerReceptionOutboundPort;
 
 @RequiredInterfaces(required = { ReceptionCI.class })
 @OfferedInterfaces(offered = { ManagementCI.class, PublicationCI.class })
-public class Broker extends AbstractComponent
-		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
+public class Broker extends AbstractComponent implements ManagementCI, PublicationCI {
 
 	// ports du composant
 	// protected BrokerReceptionOutboundPort brop;
