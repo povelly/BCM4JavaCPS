@@ -26,8 +26,8 @@ public class Publisher extends AbstractComponent {
 	protected PublisherPublicationOutboundPort ppop;
 	protected PublisherManagementOutboundPort pmop;
 	// uris pour les connections
-	protected String pipServerURI;
-	protected String mipServerURI;
+	protected String pipServerURI; // PublicationInboundPort du Broker
+	protected String mipServerURI; // ManagementInboundPort du Broker
 
 	protected Publisher(String pipServerURI, String mipServerURI) throws Exception {
 		super(1, 0);

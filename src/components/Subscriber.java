@@ -27,20 +27,19 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	protected SubscriberManagementOutboundPort smop;
 	protected SubscriberReceptionInboundPort srip;
 	// uris pour les connections
-	protected String mipServerUri;
+	protected String mipServerUri; // ManagementInboundPort du Broker
 
-	protected Subscriber(String sripURI, String mipServerUri) throws Exception {
+	protected Subscriber(String mipServerUri) throws Exception {
 		super(1, 0);
 
 		// verifications
-		assert sripURI != null;
 		assert mipServerUri != null;
 
 		// creation ports
 		this.smop = new SubscriberManagementOutboundPort(this);
 		this.smop.publishPort();
 
-		this.srip = new SubscriberReceptionInboundPort(sripURI, this);
+		this.srip = new SubscriberReceptionInboundPort(this);
 		this.srip.publishPort();
 
 		// uris pour les connections
@@ -67,6 +66,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void execute() throws Exception {
 		super.execute();
+		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
 		((SubscriberManagementOutboundPort) smop.getConnector()).subscribe("topic1", srip.getPortURI());
 	}
 
