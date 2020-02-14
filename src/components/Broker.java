@@ -79,9 +79,6 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		try {
 			for (BrokerReceptionOutboundPort brop : brops)
 				this.doPortDisconnection(brop.getPortURI());
-			this.doPortDisconnection(bmip.getPortURI());
-			this.doPortDisconnection(bmip2.getPortURI());
-			this.doPortDisconnection(bpip.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -93,9 +90,6 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		try {
 			for (BrokerReceptionOutboundPort brop : brops)
 				this.doPortDisconnection(brop.getPortURI());
-			this.doPortDisconnection(bmip.getPortURI());
-			this.doPortDisconnection(bmip2.getPortURI());
-			this.doPortDisconnection(bpip.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -164,7 +158,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				try {
 					if (brop.getClientPortURI().equals(subscriber)
 							&& topics.get(topic).getFilter(subscriber).filter(m)) {
-						((ReceptionConnector) brop.getConnector()).acceptMessage(m);
+						brop.acceptMessage(m);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

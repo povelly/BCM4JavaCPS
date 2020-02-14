@@ -70,8 +70,8 @@ public class Publisher extends AbstractComponent {
 	public void execute() throws Exception {
 		super.execute();
 		// on envoie un message de test
-		((PublicationConnector) ppop.getConnector()).publish(new Message(null, "msg1"), "topic1");
-		System.out.println("published");
+		System.out.println("Message sent");
+		ppop.publish(new Message(null, "msg1"), "topic1");
 	}
 
 	@Override

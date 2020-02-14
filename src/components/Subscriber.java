@@ -66,17 +66,16 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void execute() throws Exception {
 		super.execute();
-		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
-		((SubscriberManagementOutboundPort) smop.getConnector()).subscribe("topic1", srip.getPortURI());
 		System.out.println("subscribed");
+		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
+		smop.subscribe("topic1", srip.getPortURI());
 	}
 
 	@Override
 	public void shutdown() throws ComponentShutdownException {
-		// deconnection des ports
+		// deconnection des ports clients
 		try {
 			this.doPortDisconnection(smop.getPortURI());
-			this.doPortDisconnection(srip.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException();
 		}
@@ -85,10 +84,9 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
-		// deconnection des ports
+		// deconnection des ports clients
 		try {
 			this.doPortDisconnection(smop.getPortURI());
-			this.doPortDisconnection(srip.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException();
 		}
