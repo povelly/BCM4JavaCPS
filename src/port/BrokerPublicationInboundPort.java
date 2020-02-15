@@ -26,9 +26,6 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 		assert owner instanceof Broker;
 	}
 
-	// TODO modifier les méthodes pour quelles fassent des handle request synchrone
-	// / asynchrone en fonction
-
 	@Override
 	public void publish(MessageI m, String topic) {
 		try {
@@ -42,17 +39,35 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 
 	@Override
 	public void publish(MessageI m, String[] topics) {
-		((Broker) owner).publish(m, topics);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).publish(m, topics);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String topic) {
-		((Broker) owner).publish(ms, topic);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).publish(ms, topic);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
-		((Broker) owner).publish(ms, topics);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).publish(ms, topics);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

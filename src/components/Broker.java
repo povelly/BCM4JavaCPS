@@ -1,6 +1,7 @@
 package components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,17 +64,6 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	 * 
 	 ***********************************************************************/
 
-	// @Override
-	// public void start() throws ComponentStartException {
-	// super.start();
-	// try {
-	// this.doPortConnection(this.brop.getPortURI(), ripServerURI,
-	// ReceptionConnector.class.getCanonicalName());
-	// } catch (Exception e) {
-	// throw new ComponentStartException(e);
-	// }
-	// }
-
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
@@ -120,11 +110,11 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	}
 
 	@Override
-	public void createTopics(String[] topics) {
-//		for (String topic : topics) {
-//			if (!isTopic(topic))
-//				topics.put(topic, new()); // TODO
-//		}
+	public void createTopics(String[] toCreate) {
+		for (String topic : toCreate) {
+			if (!isTopic(topic))
+				topics.put(topic, new Topic());
+		}
 	}
 
 	@Override
@@ -139,7 +129,8 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public String[] getTopics() {
-		return (String[]) topics.keySet().toArray();
+		Object[] topics = this.topics.keySet().toArray();
+		return Arrays.stream(topics).toArray(String[]::new);
 	}
 
 	@Override
@@ -167,60 +158,18 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	}
 
 	@Override
-	public void publish(MessageI m, String[] topics) { // TODO on peut recevoir plusieurs fois le mm msg dans des topics
-														// differents
-//		this.createTopics(topics);
-
-		// for (String topic : topics) {
-		// messages.get(topic).add(m);
-		// for (Entry<String, MessageFilterI> topicSubscription :
-		// subscriptions.get(topic).entrySet()) {
-		// if (topicSubscription.getValue() == null ||
-		// topicSubscription.getValue().filter(m)) {
-		// try {
-		// ((ReceptionConnector) brop.getConnector()).acceptMessage(m);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		// }
+	public void publish(MessageI m, String[] topics) { // TODO gérer cas d'envoies pour pas de repets a a reception
 
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String topic) {
-//		this.createTopic(topic);
-//		for (MessageI m : ms)
-//			messages.get(topic).add(m);
-		//
-		// for (Entry<String, MessageFilterI> topicSubscription :
-		// subscriptions.get(topic).entrySet()) {
-		// for (MessageI m : ms) {
-		// if (topicSubscription.getValue() == null ||
-		// topicSubscription.getValue().filter(m)) {
-		// try {
-		// ((ReceptionConnector) brop.getConnector()).acceptMessage(m);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// ;
-		// }
-		// }
-		// }
+		for (MessageI m : ms)
+			publish(m, topic);
 	}
 
 	@Override
-	public void publish(MessageI[] ms, String[] topics) { // TODO mm pb plusieurs notifs sur le mm msg avec topics
-															// differents
-//		this.createTopics(topics);
-//		for (String topic : topics) {
-//			for (MessageI m : ms) {
-//				messages.get(topic).add(m);
-//
-//			}
-//		}
-
+	public void publish(MessageI[] ms, String[] topics) { // TODO gérer cas d'envoies pour pas de repets a a reception
 	}
 
 	@Override
@@ -246,24 +195,14 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
-//		for (String topic : topics) {
-//			subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
-//				private static final long serialVersionUID = 1L;
-//				{
-//					put(inboundPortURI, null);
-//				}
-//			});
-//		}
+		for (String topic : topics)
+			subscribe(topic, inboundPortURI);
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
-//		subscriptions.put(topic, new HashMap<String, MessageFilterI>() {
-//			private static final long serialVersionUID = 1L;
-//			{
-//				put(inboundPortURI, filter);
-//			}
-//		});
+		subscribe(topic, inboundPortURI);
+		modifyFilter(topic, filter, inboundPortURI);
 	}
 
 	@Override

@@ -26,47 +26,66 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		assert owner instanceof Broker;
 	}
 
-	// TODO modifier les méthodes pour quelles fassent des handle request synchrone
-	// / asynchrone en fonction
-
 	@Override
 	public void createTopic(String topic) {
-		((Broker) owner).createTopic(topic);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).createTopic(topic);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void createTopics(String[] topics) {
-		((Broker) owner).createTopics(topics);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).createTopics(topics);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void destroyTopic(String topic) {
-		((Broker) owner).destroyTopic(topic);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).destroyTopic(topic);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public boolean isTopic(String topic) {
-		return ((Broker) owner).isTopic(topic);
+		try {
+			return this.getOwner().handleRequestSync(owner -> ((Broker) owner).isTopic(topic));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public String[] getTopics() {
-		return ((Broker) owner).getTopics();
+		try {
+			return this.getOwner().handleRequestSync(owner -> ((Broker) owner).getTopics());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
 	public String getPublicationPortURI() throws Exception {
-		return ((Broker) owner).getPublicationPortURI();
+		return this.getOwner().handleRequestSync(owner -> ((Broker) owner).getPublicationPortURI());
 	}
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {
-//		this.getOwner().handleRequestAsync(new AbstractComponent.AbstractService<Void>() {
-//			@Override
-//			public void run() {
-//				((Broker) this.getServiceOwner()).subscribe(topic, inboundPortURI);
-//			}
-//		});
 		try {
 			this.getOwner().runTask(owner -> {
 				((Broker) owner).subscribe(topic, inboundPortURI);
@@ -74,30 +93,50 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-//		this.getOwner().handleRequestAsync(owner -> {
-//			((Broker) owner).subscribe(topic, inboundPortURI);
-//		});
 	}
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
-		((Broker) owner).subscribe(topics, inboundPortURI);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).subscribe(topics, inboundPortURI);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
-		((Broker) owner).subscribe(topic, filter, inboundPortURI);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).subscribe(topic, filter, inboundPortURI);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
-		((Broker) owner).modifyFilter(topic, newFilter, inboundPortURI);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).modifyFilter(topic, newFilter, inboundPortURI);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
-		((Broker) owner).unsubscribe(topic, inboundPortURI);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).unsubscribe(topic, inboundPortURI);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

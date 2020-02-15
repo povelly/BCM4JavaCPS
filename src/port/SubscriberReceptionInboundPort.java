@@ -14,9 +14,6 @@ import interfaces.ReceptionCI;
  */
 public class SubscriberReceptionInboundPort extends AbstractInboundPort implements ReceptionCI {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public SubscriberReceptionInboundPort(ComponentI owner) throws Exception {
@@ -28,9 +25,6 @@ public class SubscriberReceptionInboundPort extends AbstractInboundPort implemen
 		super(uri, ReceptionCI.class, owner);
 		assert owner instanceof Subscriber;
 	}
-
-	// TODO modifier les méthodes pour quelles fassent des handle request synchrone
-	// / asynchrone en fonction
 
 	@Override
 	public void acceptMessage(MessageI m) {
@@ -45,8 +39,13 @@ public class SubscriberReceptionInboundPort extends AbstractInboundPort implemen
 
 	@Override
 	public void acceptMessage(MessageI[] ms) {
-		// TODO Auto-generated method stub
-
+		try {
+			this.getOwner().runTask(owner -> {
+				((Subscriber) owner).acceptMessage(ms);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
