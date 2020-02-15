@@ -35,7 +35,7 @@ public class ManagementConnector extends AbstractConnector implements Management
 	public String[] getTopics() throws Exception {
 		return ((ManagementCI) this.offering).getTopics();
 	}
-	
+
 	@Override
 	public String getPublicationPortURI() throws Exception {
 		return ((ManagementCI) this.offering).getPublicationPortURI();

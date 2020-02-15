@@ -152,12 +152,11 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		this.createTopic(topic); // crée le topic s'il n'existe pas
 		topics.get(topic).addMessage(m);
 		// transmet le messages au abonnés
-
 		for (String subscriber : topics.get(topic).getSubscribers()) {
 			for (BrokerReceptionOutboundPort brop : brops) {
 				try {
-					if (brop.getClientPortURI().equals(subscriber)
-							&& topics.get(topic).getFilter(subscriber).filter(m)) {
+					if (brop.getServerPortURI().equals(subscriber) && (topics.get(topic).getFilter(subscriber) == null
+							|| topics.get(topic).getFilter(subscriber).filter(m))) {
 						brop.acceptMessage(m);
 					}
 				} catch (Exception e) {

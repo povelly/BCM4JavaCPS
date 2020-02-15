@@ -53,7 +53,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	public String[] getTopics() {
 		return ((Broker) owner).getTopics();
 	}
-	
+
 	@Override
 	public String getPublicationPortURI() throws Exception {
 		return ((Broker) owner).getPublicationPortURI();
@@ -61,7 +61,23 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {
-		((Broker) owner).subscribe(topic, inboundPortURI);
+//		this.getOwner().handleRequestAsync(new AbstractComponent.AbstractService<Void>() {
+//			@Override
+//			public void run() {
+//				((Broker) this.getServiceOwner()).subscribe(topic, inboundPortURI);
+//			}
+//		});
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).subscribe(topic, inboundPortURI);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+//		this.getOwner().handleRequestAsync(owner -> {
+//			((Broker) owner).subscribe(topic, inboundPortURI);
+//		});
 	}
 
 	@Override

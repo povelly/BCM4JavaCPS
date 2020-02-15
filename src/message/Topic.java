@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
@@ -25,8 +26,8 @@ public class Topic {
 		this.subscriptions = new HashMap<String, MessageFilterI>();
 	}
 
-	public String[] getSubscribers() {
-		return (String[]) subscriptions.keySet().toArray();
+	public Set<String> getSubscribers() {
+		return subscriptions.keySet();
 	}
 
 	public MessageFilterI getFilter(String subscriber) {
@@ -71,4 +72,5 @@ public class Topic {
 	public void removeSubscriber(String subscriber) {
 		subscriptions.remove(subscriber);
 	}
+
 }

@@ -31,7 +31,13 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 
 	@Override
 	public void publish(MessageI m, String topic) {
-		((Broker) owner).publish(m, topic);
+		try {
+			this.getOwner().runTask(owner -> {
+				((Broker) owner).publish(m, topic);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

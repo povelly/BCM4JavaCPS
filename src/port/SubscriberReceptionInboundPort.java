@@ -34,6 +34,13 @@ public class SubscriberReceptionInboundPort extends AbstractInboundPort implemen
 
 	@Override
 	public void acceptMessage(MessageI m) {
+		try {
+			this.getOwner().runTask(owner -> {
+				((Subscriber) owner).acceptMessage(m);
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -66,7 +66,6 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void execute() throws Exception {
 		super.execute();
-		System.out.println("subscribed");
 		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
 		smop.subscribe("topic1", srip.getPortURI());
 	}
@@ -110,7 +109,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
-			System.out.println("PortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+			System.out.println("Message reçu :\nPortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -120,7 +119,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	public void acceptMessage(MessageI[] ms) {
 		try {
 			for (MessageI m : ms)
-				System.out.println("PortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+				System.out.println("Message reçu :\nPortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

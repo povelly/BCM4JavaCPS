@@ -68,9 +68,9 @@ public class Publisher extends AbstractComponent {
 
 	@Override
 	public void execute() throws Exception {
+		Thread.sleep(2000); // pour attendre que subscriber ai souscrit avant d'envoyer message
 		super.execute();
 		// on envoie un message de test
-		System.out.println("Message sent");
 		ppop.publish(new Message(null, "msg1"), "topic1");
 	}
 
