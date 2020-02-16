@@ -158,8 +158,28 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	}
 
 	@Override
-	public void publish(MessageI m, String[] topics) { // TODO gérer cas d'envoies pour pas de repets a a reception
+	public void publish(MessageI m, String[] topics) {
+		for (String topic : topics) {
+			this.createTopic(topic);
+			this.topics.get(topic).addMessage(m);
+		}
+		List<String> notifiedSubs = new ArrayList<>();
+		for (String topic : topics)
+			for (String subscriber : this.topics.get(topic).getSubscribers())
 
+				if (!notifiedSubs.contains(subscriber)) {
+					notifiedSubs.add(subscriber);
+					for (BrokerReceptionOutboundPort brop : brops) {
+						try {
+							if (brop.getServerPortURI().equals(subscriber)
+									&& (this.topics.get(topic).getFilter(subscriber) == null
+											|| this.topics.get(topic).getFilter(subscriber).filter(m)))
+								brop.acceptMessage(m);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
 	}
 
 	@Override
@@ -169,7 +189,29 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	}
 
 	@Override
-	public void publish(MessageI[] ms, String[] topics) { // TODO gérer cas d'envoies pour pas de repets a a reception
+	public void publish(MessageI[] ms, String[] topics) {
+		for (String topic : topics) {
+			this.createTopic(topic);
+			for (MessageI m : ms)
+				this.topics.get(topic).addMessage(m);
+		}
+		List<String> notifiedSubs = new ArrayList<>();
+		for (String topic : topics)
+			for (String subscriber : this.topics.get(topic).getSubscribers())
+				if (!notifiedSubs.contains(subscriber)) {
+					notifiedSubs.add(subscriber);
+					for (MessageI m : ms)
+						for (BrokerReceptionOutboundPort brop : brops) {
+							try {
+								if (brop.getServerPortURI().equals(subscriber)
+										&& (this.topics.get(topic).getFilter(subscriber) == null
+												|| this.topics.get(topic).getFilter(subscriber).filter(m)))
+									brop.acceptMessage(m);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+				}
 	}
 
 	@Override
