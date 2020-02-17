@@ -164,9 +164,8 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 			this.topics.get(topic).addMessage(m);
 		}
 		List<String> notifiedSubs = new ArrayList<>();
-		for (String topic : topics)
-			for (String subscriber : this.topics.get(topic).getSubscribers())
-
+		for (String topic : topics) {
+			for (String subscriber : this.topics.get(topic).getSubscribers()) {
 				if (!notifiedSubs.contains(subscriber)) {
 					notifiedSubs.add(subscriber);
 					for (BrokerReceptionOutboundPort brop : brops) {
@@ -180,6 +179,8 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 						}
 					}
 				}
+			}
+		}
 	}
 
 	@Override
@@ -228,7 +229,13 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		try {
 			BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
 			brop.publishPort();
-			brops.add(brop);
+			boolean alreadyExists = false;
+			for (BrokerReceptionOutboundPort port : brops) {
+				if (port.getServerPortURI().equals(inboundPortURI))
+					alreadyExists = true;
+			}
+			if (!alreadyExists)
+				brops.add(brop);
 			this.doPortConnection(brop.getPortURI(), inboundPortURI, ReceptionConnector.class.getCanonicalName());
 		} catch (Exception e) {
 			e.printStackTrace();

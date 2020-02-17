@@ -68,6 +68,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 		super.execute();
 		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
 		smop.subscribe("topic1", srip.getPortURI());
+		smop.subscribe("topic2", m -> (false), srip.getPortURI());
 	}
 
 	@Override

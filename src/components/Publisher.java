@@ -72,6 +72,11 @@ public class Publisher extends AbstractComponent {
 		super.execute();
 		// on envoie un message de test
 		ppop.publish(new Message(null, "msg1"), "topic1");
+		ppop.publish(new Message(null, "msg2"), new String []{"topic1", "topic2"});
+		ppop.publish(new Message [] {new Message(null, "msg3"), new Message(null, "msg4")}, "topic1");
+		ppop.publish(new Message [] {new Message(null, "msg5"), new Message(null, "msg6")}, new String []{"topic1", "topic2"});
+		ppop.publish(new Message(null, "msg7"), "topic2");
+		
 	}
 
 	@Override
