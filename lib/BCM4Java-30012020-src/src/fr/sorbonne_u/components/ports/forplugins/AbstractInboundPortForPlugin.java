@@ -41,40 +41,45 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
 //----------------------------------------------------------------------------
 /**
  * The class <code>AbstractInboundPortForPlugin</code> extends the standard
- * inbound port for the case where the services to be called is implemented
- * by a plug-in.
+ * inbound port for the case where the services to be called is implemented by a
+ * plug-in.
  *
- * <p><strong>Description</strong></p>
+ * <p>
+ * <strong>Description</strong>
+ * </p>
  * 
- * The inbound port must directly call a plug-in with a specific URI, so
- * the plug-in URI is passed at the creation of the port and used at each
- * call.
+ * The inbound port must directly call a plug-in with a specific URI, so the
+ * plug-in URI is passed at the creation of the port and used at each call.
  * 
- * <p><strong>Invariant</strong></p>
+ * <p>
+ * <strong>Invariant</strong>
+ * </p>
  * 
  * <pre>
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2017-12-22</p>
+ * <p>
+ * Created on : 2017-12-22
+ * </p>
  * 
- * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+ * @author <a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	AbstractInboundPortForPlugin
-extends		AbstractInboundPort
-{
+public abstract class AbstractInboundPortForPlugin extends AbstractInboundPort {
 	// ------------------------------------------------------------------------
 	// Port instance variables and constructors
 	// ------------------------------------------------------------------------
 
-	private static final long	serialVersionUID = 1L ;
-	protected final String		pluginURI ;
+	private static final long serialVersionUID = 1L;
+	protected final String pluginURI;
 
 	/**
-	 * create and initialise inbound ports, with a given URI and a given
-	 * plug-in URI.
+	 * create and initialise inbound ports, with a given URI and a given plug-in
+	 * URI.
 	 * 
-	 * <p><strong>Contract</strong></p>
+	 * <p>
+	 * <strong>Contract</strong>
+	 * </p>
 	 * 
 	 * <pre>
 	 * pre	uri != null and owner != null and implementedInterface != null
@@ -87,35 +92,30 @@ extends		AbstractInboundPort
 	 * post	this.getImplementedInterface().equals(implementedInterface)
 	 * </pre>
 	 *
-	 * @param uri					unique identifier of the port.
-	 * @param implementedInterface	interface implemented by this port.
-	 * @param pluginURI				URI of the plug-in to be called.
-	 * @param owner					component that owns this port.
-	 * @throws Exception 			<i>todo.</i>
+	 * @param uri                  unique identifier of the port.
+	 * @param implementedInterface interface implemented by this port.
+	 * @param pluginURI            URI of the plug-in to be called.
+	 * @param owner                component that owns this port.
+	 * @throws Exception <i>todo.</i>
 	 */
-	public				AbstractInboundPortForPlugin(
-		String uri,
-		Class<?> implementedInterface,
-		String pluginURI,
-		ComponentI owner
-		) throws Exception
-	{
+	public AbstractInboundPortForPlugin(String uri, Class<?> implementedInterface, String pluginURI, ComponentI owner)
+			throws Exception {
 		super(uri, implementedInterface, owner);
 
-		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null") ;
-		assert	this.getOwner().isInstalled(pluginURI) :
-					new PreconditionException("this.getOwner()."
-											+ "isInstalled(pluginURI)") ;
+		assert pluginURI != null : new PreconditionException("pluginURI != null");
+//		assert this.getOwner()
+//				.isInstalled(pluginURI) : new PreconditionException("this.getOwner()." + "isInstalled(pluginURI)");
 
-		this.pluginURI = pluginURI ;
+		this.pluginURI = pluginURI;
 	}
 
 	/**
-	 * create and initialise inbound ports with an automatically generated URI
-	 * but a given plug-in URI.
+	 * create and initialise inbound ports with an automatically generated URI but a
+	 * given plug-in URI.
 	 * 
-	 * <p><strong>Contract</strong></p>
+	 * <p>
+	 * <strong>Contract</strong>
+	 * </p>
 	 * 
 	 * <pre>
 	 * pre	owner != null and implementedInterface != null
@@ -126,23 +126,18 @@ extends		AbstractInboundPort
 	 * post	this.getPortURI().equals(uri)
 	 * </pre>
 	 *
-	 * @param implementedInterface	interface implemented by this port.
-	 * @param pluginURI				URI of the plug-in to be called.
-	 * @param owner					component that owns this port.
-	 * @throws Exception	 			<i>todo.</i>
+	 * @param implementedInterface interface implemented by this port.
+	 * @param pluginURI            URI of the plug-in to be called.
+	 * @param owner                component that owns this port.
+	 * @throws Exception <i>todo.</i>
 	 */
-	public				AbstractInboundPortForPlugin(
-		Class<?> implementedInterface,
-		String pluginURI,
-		ComponentI owner
-		) throws Exception
-	{
+	public AbstractInboundPortForPlugin(Class<?> implementedInterface, String pluginURI, ComponentI owner)
+			throws Exception {
 		super(implementedInterface, owner);
 
-		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null") ;
+		assert pluginURI != null : new PreconditionException("pluginURI != null");
 
-		this.pluginURI = pluginURI ;
+		this.pluginURI = pluginURI;
 	}
 }
 //----------------------------------------------------------------------------

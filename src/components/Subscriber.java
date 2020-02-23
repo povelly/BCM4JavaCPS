@@ -1,16 +1,10 @@
 package components;
 
-import connectors.ManagementConnector;
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.annotations.OfferedInterfaces;
-import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
-import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import interfaces.ManagementCI;
+import fr.sorbonne_u.components.AbstractPort;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
-import port.SubscriberManagementOutboundPort;
-import port.SubscriberReceptionInboundPort;
+import plugins.SubscriberPlugin;
 
 /**
  * Classe representant le composant souscriveur
@@ -19,31 +13,23 @@ import port.SubscriberReceptionInboundPort;
  *
  */
 
-@RequiredInterfaces(required = { ManagementCI.class })
-@OfferedInterfaces(offered = { ReceptionCI.class })
 public class Subscriber extends AbstractComponent implements ReceptionCI {
 
-	// ports du composant
-	protected SubscriberManagementOutboundPort smop;
-	protected SubscriberReceptionInboundPort srip;
-	// uris pour les connections
-	protected String mipServerUri; // ManagementInboundPort du Broker
+	protected SubscriberPlugin subscriberPlugin;
+	protected String ripUri;
 
+	// TODO verif les histoires d'uris, surtout ripUri
 	protected Subscriber(String mipServerUri) throws Exception {
 		super(1, 0);
 
 		// verifications
 		assert mipServerUri != null;
 
-		// creation ports
-		this.smop = new SubscriberManagementOutboundPort(this);
-		this.smop.publishPort();
-
-		this.srip = new SubscriberReceptionInboundPort(this);
-		this.srip.publishPort();
-
-		// uris pour les connections
-		this.mipServerUri = mipServerUri;
+		// plugins
+		this.ripUri = AbstractPort.generatePortURI();
+		this.subscriberPlugin = new SubscriberPlugin(mipServerUri, ripUri);
+		subscriberPlugin.setPluginURI(AbstractPort.generatePortURI()); // TODO verif si on genere comme ca l'uri ??
+		this.installPlugin(this.subscriberPlugin);
 	}
 
 	/***********************************************************************
@@ -53,52 +39,11 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	 ***********************************************************************/
 
 	@Override
-	public void start() throws ComponentStartException {
-		super.start();
-		// connection des ports
-		try {
-			this.doPortConnection(smop.getPortURI(), mipServerUri, ManagementConnector.class.getCanonicalName());
-		} catch (Exception e) {
-			throw new ComponentStartException();
-		}
-	}
-
-	@Override
 	public void execute() throws Exception {
 		super.execute();
 		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
-		smop.subscribe("topic1", srip.getPortURI());
-		smop.subscribe("topic2", m -> (false), srip.getPortURI());
-	}
-
-	@Override
-	public void shutdown() throws ComponentShutdownException {
-		// deconnection des ports clients
-		try {
-			this.doPortDisconnection(smop.getPortURI());
-		} catch (Exception e) {
-			throw new ComponentShutdownException();
-		}
-		super.shutdown();
-	}
-
-	@Override
-	public void shutdownNow() throws ComponentShutdownException {
-		// deconnection des ports clients
-		try {
-			this.doPortDisconnection(smop.getPortURI());
-		} catch (Exception e) {
-			throw new ComponentShutdownException();
-		}
-		super.shutdownNow();
-	}
-
-	@Override
-	public void finalise() throws Exception {
-		// depublication des ports
-		smop.unpublishPort();
-		srip.unpublishPort();
-		super.finalise();
+		subscriberPlugin.subscribe("topic1", ripUri);
+		subscriberPlugin.subscribe("topic2", m -> (false), ripUri);
 	}
 
 	/***********************************************************************
@@ -110,7 +55,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
-			System.out.println("Message reçu :\nPortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+			System.out.println("Message reçu :\nPortURI : " + this.ripUri + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -120,7 +65,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	public void acceptMessage(MessageI[] ms) {
 		try {
 			for (MessageI m : ms)
-				System.out.println("Message reçu :\nPortURI : " + srip.getPortURI() + "; message : " + m.getPayload());
+				System.out.println("Message reçu :\nPortURI : " + this.ripUri + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

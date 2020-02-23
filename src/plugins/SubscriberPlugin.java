@@ -1,60 +1,128 @@
 package plugins;
 
+import connectors.ManagementConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
+import interfaces.MessageI;
 import interfaces.ReceptionCI;
+import interfaces.ReceptionImplementationI;
 import interfaces.SubscriptionImplementationI;
+import port.ManagementOutboundPortForPlugin;
+import port.ReceptionInboundPortForPlugin;
 
-public class SubscriberPlugin extends AbstractPlugin implements SubscriptionImplementationI {
+/**
+ * plugin server pour le subscriber permet la reception de message (serveur) et
+ * un acces a management en tant que client
+ * 
+ * @author Bello Velly
+ *
+ */
+public class SubscriberPlugin extends AbstractPlugin implements ReceptionImplementationI, SubscriptionImplementationI {
 
 	private static final long serialVersionUID = 1L;
-	protected SubscriberInboundPortForPlugin sip;
-	
+	protected ReceptionInboundPortForPlugin rip;
+	protected String ripUri;
+	protected ManagementOutboundPortForPlugin mop;
+	protected String mipUri;
+
+	public SubscriberPlugin(String mipUri, String ripUri) {
+		super();
+		this.mipUri = mipUri;
+		this.ripUri = ripUri;
+	}
+
+	/***********************************************************************
+	 * 
+	 * CYCLE DE VIE
+	 * 
+	 ***********************************************************************/
+
 	@Override
 	public void installOn(ComponentI owner) throws Exception {
 		super.installOn(owner);
-		assert owner instanceof SubscriptionImplementationI;
-		
-		this.addOfferedInterface(ReceptionCI.class); // TODO
-		this.sip = new SubscriberInboundPortForPlugin(this.getPluginURI(), this.owner);
-		this.sip.publishPort();
+		// Reception : serveur
+		assert owner instanceof ReceptionImplementationI;
+		this.addOfferedInterface(ReceptionCI.class);
+		// TODO demander prof ici pour l'uri, car erreur dans son framework si on passe
+		// une uri
+		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
+		this.rip.publishPort();
+		// Management : client
+		this.addRequiredInterface(ManagementCI.class);
+		this.mop = new ManagementOutboundPortForPlugin(this.owner);
+		this.mop.publishPort();
 	}
-	
+
+	@Override
+	public void initialise() throws Exception {
+		// Connection sur management
+		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
+		super.initialise();
+	}
+
+	@Override
+	public void finalise() throws Exception {
+		// Deconnection sur management
+		this.owner.doPortDisconnection(mop.getPortURI());
+		super.finalise();
+	}
+
 	@Override
 	public void uninstall() throws Exception {
-		this.sip.unpublishPort();
-		this.sip.destroyPort();
-		this.removeOfferedInterface(ReceptionCI.class); // TODO pas sur
+		// reception
+		this.rip.unpublishPort();
+		this.removeOfferedInterface(ReceptionCI.class);
+		// management
+		this.mop.unpublishPort();
+		this.mop.destroyPort();
+		this.removeRequiredInterface(ManagementCI.class);
 	}
-	
-	private SubscriptionImplementationI getOwner() {
-		return (SubscriptionImplementationI) this.owner;
+
+	/***********************************************************************
+	 * 
+	 * IMPLANTATIONS DE SERVICES
+	 * 
+	 ***********************************************************************/
+
+	private ReceptionImplementationI getOwner() {
+		return (ReceptionImplementationI) this.owner;
+	}
+
+	@Override
+	public void acceptMessage(MessageI m) throws Exception {
+		this.getOwner().acceptMessage(m);
+	}
+
+	@Override
+	public void acceptMessage(MessageI[] ms) throws Exception {
+		this.getOwner().acceptMessage(ms);
 	}
 
 	@Override
 	public void subscribe(String topic, String inboundPortURI) throws Exception {
-		this.getOwner().subscribe(topic, inboundPortURI);
+		this.mop.subscribe(topic, inboundPortURI);
 	}
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) throws Exception {
-		this.getOwner().subscribe(topics, inboundPortURI);
+		this.mop.subscribe(topics, inboundPortURI);
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) throws Exception {
-		this.getOwner().subscribe(topic, filter, inboundPortURI);
+		this.mop.subscribe(topic, filter, inboundPortURI);
 	}
 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) throws Exception {
-		this.getOwner().modifyFilter(topic, newFilter, inboundPortURI);
+		this.mop.modifyFilter(topic, newFilter, inboundPortURI);
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) throws Exception {
-		this.getOwner().unsubscribe(topic, inboundPortURI);
+		this.mop.unsubscribe(topic, inboundPortURI);
 	}
 
 }
