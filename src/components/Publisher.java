@@ -3,7 +3,7 @@ package components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
 import message.Message;
-import plugins.PublisherPlugin;
+import plugins.PublisherClientPlugin;
 
 /**
  * Classe representant le composant publieur
@@ -14,7 +14,7 @@ import plugins.PublisherPlugin;
 
 public class Publisher extends AbstractComponent {
 
-	protected PublisherPlugin publisherPlugin;
+	protected PublisherClientPlugin publisherPlugin;
 
 	protected Publisher(String pipURI, String mipURI) throws Exception {
 		super(1, 0);
@@ -24,7 +24,7 @@ public class Publisher extends AbstractComponent {
 		assert mipURI != null;
 
 		// plugin
-		publisherPlugin = new PublisherPlugin(pipURI, mipURI);
+		publisherPlugin = new PublisherClientPlugin(pipURI, mipURI);
 		publisherPlugin.setPluginURI(AbstractPort.generatePortURI());
 		this.installPlugin(publisherPlugin);
 	}

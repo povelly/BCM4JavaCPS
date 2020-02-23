@@ -12,7 +12,7 @@ import interfaces.PublicationsImplementationI;
 import port.ManagementOutboundPortForPlugin;
 import port.PublicationOutboundPortForPlugin;
 
-public class PublisherPlugin extends AbstractPlugin implements PublicationsImplementationI, ManagementImplementationI {
+public class PublisherClientPlugin extends AbstractPlugin implements PublicationsImplementationI, ManagementImplementationI {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,7 +21,7 @@ public class PublisherPlugin extends AbstractPlugin implements PublicationsImple
 	protected String pipUri;
 	protected String mipUri;
 
-	public PublisherPlugin(String pipUri, String mipUri) {
+	public PublisherClientPlugin(String pipUri, String mipUri) {
 		super();
 		this.pipUri = pipUri;
 		this.mipUri = mipUri;
