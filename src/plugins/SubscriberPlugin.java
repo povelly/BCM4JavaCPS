@@ -45,18 +45,18 @@ public class SubscriberPlugin extends AbstractPlugin implements ReceptionImpleme
 		// Reception : serveur
 		assert owner instanceof ReceptionImplementationI;
 		this.addOfferedInterface(ReceptionCI.class);
-		// TODO demander prof ici pour l'uri, car erreur dans son framework si on passe
-		// une uri
-		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
-		this.rip.publishPort();
 		// Management : client
 		this.addRequiredInterface(ManagementCI.class);
-		this.mop = new ManagementOutboundPortForPlugin(this.owner);
-		this.mop.publishPort();
 	}
 
 	@Override
 	public void initialise() throws Exception {
+		// Reception
+		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
+		this.rip.publishPort();
+		// Management
+		this.mop = new ManagementOutboundPortForPlugin(this.owner);
+		this.mop.publishPort();
 		// Connection sur management
 		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
 		super.initialise();

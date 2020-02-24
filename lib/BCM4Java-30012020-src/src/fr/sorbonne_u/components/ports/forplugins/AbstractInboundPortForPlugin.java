@@ -101,10 +101,9 @@ public abstract class AbstractInboundPortForPlugin extends AbstractInboundPort {
 	public AbstractInboundPortForPlugin(String uri, Class<?> implementedInterface, String pluginURI, ComponentI owner)
 			throws Exception {
 		super(uri, implementedInterface, owner);
-
 		assert pluginURI != null : new PreconditionException("pluginURI != null");
-//		assert this.getOwner()
-//				.isInstalled(pluginURI) : new PreconditionException("this.getOwner()." + "isInstalled(pluginURI)");
+		assert this.getOwner()
+				.isInstalled(pluginURI) : new PreconditionException("this.getOwner()." + "isInstalled(pluginURI)");
 
 		this.pluginURI = pluginURI;
 	}
