@@ -54,7 +54,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 		this.createNewExecutorService("publication", 3, false);
 		this.createNewExecutorService("subscription", 3, false);
-		
+
 		this.bmip = new BrokerManagementInboundPort(bmipURI, this.getExecutorServiceIndex("subscription"), this);
 		this.bmip.publishPort();
 
@@ -63,17 +63,21 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 		this.bpip = new BrokerPublicationInboundPort(bpipURI, this.getExecutorServiceIndex("publication"), this);
 		this.bpip.publishPort();
-		
+
+		// for (String i : this.executorServicesIndexes.keySet()) {
+		// System.out.println("URI : " + i);
+		// System.out.println("INDEX : " + this.getExecutorServiceIndex(i));
+		// }
 
 		// creation ports
-//		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
-//		this.bmip.publishPort();
-//
-//		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this);
-//		this.bmip2.publishPort();
-//
-//		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
-//		this.bpip.publishPort();
+		// this.bmip = new BrokerManagementInboundPort(bmipURI, this);
+		// this.bmip.publishPort();
+		//
+		// this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this);
+		// this.bmip2.publishPort();
+		//
+		// this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
+		// this.bpip.publishPort();
 	}
 
 	/***********************************************************************
@@ -171,6 +175,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	@Override
 	public void publish(MessageI m, String topic) {
 		this.lock.writeLock().lock();
+		System.out.println("broker :" + Thread.currentThread().getId());
 		try {
 			this.createTopic(topic); // crée le topic s'il n'existe pas
 			topics.get(topic).addMessage(m);
@@ -181,6 +186,9 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 						if (brop.getServerPortURI().equals(subscriber)
 								&& (topics.get(topic).getFilter(subscriber) == null
 										|| topics.get(topic).getFilter(subscriber).filter(m))) {
+							// TODO envoi sur pool different ici, cf add() de testercomponent avec un Task()
+							// les schedulable servent à attendre avant de s'executer genre par exemple si
+							// on veut attendre d'avoir plusieurs messages pour les envoyer tous d'un coup
 							brop.acceptMessage(m);
 						}
 					} catch (Exception e) {

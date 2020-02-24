@@ -115,6 +115,7 @@ public class PublisherClientPlugin extends AbstractPlugin implements Publication
 	@Override
 	public void publish(MessageI m, String topic) throws Exception {
 		this.pop.publish(m, topic);
+		System.out.println("thread id"+Thread.currentThread().getId());
 	}
 
 	@Override
