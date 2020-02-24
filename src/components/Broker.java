@@ -52,18 +52,28 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 		this.lock = new ReentrantReadWriteLock();
 
-		this.createNewExecutorService("PUBLISH", 3, false);
-		this.createNewExecutorService("SUBSCRIBE", 1, false);
-
-		// creation ports
-		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
+		this.createNewExecutorService("publication", 3, false);
+		this.createNewExecutorService("subscription", 3, false);
+		
+		this.bmip = new BrokerManagementInboundPort(bmipURI, this.getExecutorServiceIndex("subscription"), this);
 		this.bmip.publishPort();
 
-		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this);
+		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this.getExecutorServiceIndex("subscription"), this);
 		this.bmip2.publishPort();
 
-		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
+		this.bpip = new BrokerPublicationInboundPort(bpipURI, this.getExecutorServiceIndex("publication"), this);
 		this.bpip.publishPort();
+		
+
+		// creation ports
+//		this.bmip = new BrokerManagementInboundPort(bmipURI, this);
+//		this.bmip.publishPort();
+//
+//		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, this);
+//		this.bmip2.publishPort();
+//
+//		this.bpip = new BrokerPublicationInboundPort(bpipURI, this);
+//		this.bpip.publishPort();
 	}
 
 	/***********************************************************************
@@ -113,32 +123,44 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void createTopic(String topic) {
+		this.lock.writeLock().lock();
 		if (!isTopic(topic))
 			topics.put(topic, new Topic());
+		this.lock.writeLock().unlock();
 	}
 
 	@Override
 	public void createTopics(String[] toCreate) {
+		this.lock.writeLock().lock();
 		for (String topic : toCreate) {
 			if (!isTopic(topic))
 				topics.put(topic, new Topic());
 		}
+		this.lock.writeLock().unlock();
 	}
 
 	@Override
 	public void destroyTopic(String topic) {
+		this.lock.writeLock().lock();
 		topics.remove(topic);
+		this.lock.writeLock().unlock();
 	}
 
 	@Override
 	public boolean isTopic(String topic) {
-		return topics.containsKey(topic);
+		this.lock.readLock().lock();
+		boolean isTopic = topics.containsKey(topic);
+		this.lock.readLock().unlock();
+		return isTopic;
 	}
 
 	@Override
 	public String[] getTopics() {
+		this.lock.readLock().lock();
 		Object[] topics = this.topics.keySet().toArray();
-		return Arrays.stream(topics).toArray(String[]::new);
+		String[] sTopics = Arrays.stream(topics).toArray(String[]::new);
+		this.lock.readLock().unlock();
+		return sTopics;
 	}
 
 	@Override
@@ -148,7 +170,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void publish(MessageI m, String topic) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			this.createTopic(topic); // crée le topic s'il n'existe pas
 			topics.get(topic).addMessage(m);
@@ -167,13 +189,13 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				}
 			}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void publish(MessageI m, String[] topics) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			for (String topic : topics) {
 				this.createTopic(topic);
@@ -198,24 +220,24 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				}
 			}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String topic) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			for (MessageI m : ms)
 				publish(m, topic);
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			for (String topic : topics) {
 				this.createTopic(topic);
@@ -240,7 +262,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 							}
 					}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
@@ -249,7 +271,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 	 * Quand quelqu'un souscrit, on créer un port pour pouvoir le contacter
 	 */
 	public void subscribe(String topic, String inboundPortURI) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			// si le topic n'existe pas, on l'ajoute
 			if (!topics.containsKey(topic))
@@ -272,48 +294,48 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				e.printStackTrace();
 			}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			for (String topic : topics)
 				subscribe(topic, inboundPortURI);
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			subscribe(topic, inboundPortURI);
 			modifyFilter(topic, filter, inboundPortURI);
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			Topic t = topics.get(topic);
 			if (t != null) {
 				t.updateFilter(inboundPortURI, newFilter);
 			}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
-		this.lock.readLock().lock();
+		this.lock.writeLock().lock();
 		try {
 			Topic t = topics.get(topic);
 			if (t != null) {
@@ -334,7 +356,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				});
 			}
 		} finally {
-			this.lock.readLock().unlock();
+			this.lock.writeLock().unlock();
 		}
 	}
 
