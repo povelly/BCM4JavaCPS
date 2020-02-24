@@ -29,10 +29,15 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void createTopic(String topic) {
 		try {
-			this.getOwner().handleRequestAsync(owner -> {
+			this.getOwner().handleRequestAsync(1, owner -> {
 				((Broker) owner).createTopic(topic);
 				return null;
 			});
+
+//			this.getOwner().handleRequestAsync(owner -> {
+//				((Broker) owner).createTopic(topic);
+//				return null;
+//			});
 
 //			this.getOwner().runTask(owner -> {
 //				((Broker) owner).createTopic(topic);
