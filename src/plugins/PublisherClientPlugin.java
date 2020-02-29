@@ -12,7 +12,8 @@ import interfaces.PublicationsImplementationI;
 import port.ManagementOutboundPortForPlugin;
 import port.PublicationOutboundPortForPlugin;
 
-public class PublisherClientPlugin extends AbstractPlugin implements PublicationsImplementationI, ManagementImplementationI {
+public class PublisherClientPlugin extends AbstractPlugin
+		implements PublicationsImplementationI, ManagementImplementationI {
 
 	private static final long serialVersionUID = 1L;
 
@@ -115,7 +116,6 @@ public class PublisherClientPlugin extends AbstractPlugin implements Publication
 	@Override
 	public void publish(MessageI m, String topic) throws Exception {
 		this.pop.publish(m, topic);
-		System.out.println("thread id"+Thread.currentThread().getId());
 	}
 
 	@Override
