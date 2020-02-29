@@ -32,6 +32,10 @@ import port.BrokerReceptionOutboundPort;
 @OfferedInterfaces(offered = { ManagementCI.class, PublicationCI.class })
 public class Broker extends AbstractComponent implements ManagementCI, PublicationCI {
 
+	// Executor services uris
+	private final String RECEPTION_EXECUTOR_URI = "reception";
+	private final String ENVOIE_EXECUTOR_URI = "envoie";
+
 	// ports du composant
 	protected List<BrokerReceptionOutboundPort> brops = new ArrayList<>();
 	protected BrokerManagementInboundPort bmip;
@@ -57,13 +61,13 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		this.lock = new ReentrantReadWriteLock();
 
 		// pool de threads pour l'envoie de messages vers des subscribers
-		this.createNewExecutorService("envoie", 4, false);
+		this.createNewExecutorService(ENVOIE_EXECUTOR_URI, 4, false);
 		// pool de threads pour les requetes sur les ports entrant (management +
 		// messages reçus)
-		this.createNewExecutorService("reception", 4, false);
+		this.createNewExecutorService(RECEPTION_EXECUTOR_URI, 4, false);
 
 		// creation des ports
-		int executorServiceIndex = this.getExecutorServiceIndex("reception");
+		int executorServiceIndex = this.getExecutorServiceIndex(RECEPTION_EXECUTOR_URI);
 		this.bmip = new BrokerManagementInboundPort(bmipURI, executorServiceIndex, this);
 		this.bmip.publishPort();
 		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, executorServiceIndex, this);
@@ -166,7 +170,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 	@Override
 	public void publish(MessageI m, String topic) {
-		System.out.println("broker traite reception:" + Thread.currentThread().getId());
+		System.out.println("broker reçoit, thread : " + Thread.currentThread().getId());
 		// on ecrit le message
 		this.lock.writeLock().lock();
 		this.createTopic(topic); // crée le topic s'il n'existe pas
@@ -180,10 +184,15 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 				try {
 					if (brop.getServerPortURI().equals(subscriber) && (topics.get(topic).getFilter(subscriber) == null
 							|| topics.get(topic).getFilter(subscriber).filter(m))) {
-						// TODO envoi sur pool different ici, cf add() de testercomponent avec un Task()
-						// les schedulable servent à attendre avant de s'executer genre par exemple si
-						// on veut attendre d'avoir plusieurs messages pour les envoyer tous d'un coup
-						brop.acceptMessage(m);
+						// On envoie le message sur le thread pool d'envoies
+						this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
+							try {
+								System.out.println("broker envoie, thread : " + Thread.currentThread().getId());
+								brop.acceptMessage(m);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
