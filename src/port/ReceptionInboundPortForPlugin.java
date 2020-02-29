@@ -21,21 +21,10 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 		assert owner instanceof ReceptionImplementationI;
 	}
 
-	// TODO POURQUOI FAIRE CA ???
-//	public V get(K key) throws Exception {
-//		return this.owner.handleRequestSync(new AbstractComponent.AbstractService<V>(this.pluginURI) {
-//			@SuppressWarnings("unchecked")
-//			@Override
-//			public V call() throws Exception {
-//				return ((MapPlugin<K, V>) this.getServiceProviderReference()).get(key);
-//			}
-//		});
-//	}
-
 	@Override
 	public void acceptMessage(MessageI m) throws Exception {
 		try {
-			this.getOwner().handleRequestAsync(owner -> {
+			this.getOwner().handleRequestAsync(0, owner -> {
 				((Subscriber) owner).acceptMessage(m);
 				return null;
 			});
@@ -47,7 +36,7 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	@Override
 	public void acceptMessage(MessageI[] ms) throws Exception {
 		try {
-			this.getOwner().handleRequestAsync(owner -> {
+			this.getOwner().handleRequestAsync(0, owner -> {
 				((Subscriber) owner).acceptMessage(ms);
 				return null;
 			});

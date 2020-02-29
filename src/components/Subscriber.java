@@ -20,7 +20,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 
 	// TODO verif les histoires d'uris, surtout ripUri
 	protected Subscriber(String mipServerUri) throws Exception {
-		super(1, 0);
+		super(4, 0);
 
 		// verifications
 		assert mipServerUri != null;
@@ -28,7 +28,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 		// plugins
 		this.ripUri = AbstractPort.generatePortURI();
 		this.subscriberPlugin = new SubscriberPlugin(mipServerUri, ripUri);
-		subscriberPlugin.setPluginURI(AbstractPort.generatePortURI()); // TODO verif si on genere comme ca l'uri ??
+		subscriberPlugin.setPluginURI(AbstractPort.generatePortURI());
 		this.installPlugin(this.subscriberPlugin);
 	}
 
@@ -55,7 +55,8 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
-			System.out.println("Message reçu :\nPortURI : " + this.ripUri + "; message : " + m.getPayload());
+			System.out.println("Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : " + this.ripUri
+					+ "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -65,7 +66,8 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	public void acceptMessage(MessageI[] ms) {
 		try {
 			for (MessageI m : ms)
-				System.out.println("Message reçu :\nPortURI : " + this.ripUri + "; message : " + m.getPayload());
+				System.out.println("Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
+						+ this.ripUri + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

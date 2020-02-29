@@ -17,17 +17,6 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	private static final long serialVersionUID = 1L;
 	protected final int executorIndex;
 
-	// public BrokerManagementInboundPort(ComponentI owner) throws Exception {
-	// super(ManagementCI.class, owner);
-	// assert owner instanceof Broker;
-	// }
-	//
-	// public BrokerManagementInboundPort(String uri, ComponentI owner) throws
-	// Exception {
-	// super(uri, ManagementCI.class, owner);
-	// assert owner instanceof Broker;
-	// }
-
 	public BrokerManagementInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
 		assert owner instanceof Broker;

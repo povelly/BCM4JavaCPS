@@ -17,16 +17,6 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	private static final long serialVersionUID = 1L;
 	protected final int executorIndex;
 
-//	public BrokerPublicationInboundPort(ComponentI owner) throws Exception {
-//		super(PublicationCI.class, owner);
-//		assert owner instanceof Broker;
-//	}
-//
-//	public BrokerPublicationInboundPort(String uri, ComponentI owner) throws Exception {
-//		super(uri, PublicationCI.class, owner);
-//		assert owner instanceof Broker;
-//	}
-	
 	public BrokerPublicationInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
 		super(uri, PublicationCI.class, owner);
 		assert owner instanceof Broker;
