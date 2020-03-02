@@ -4,17 +4,8 @@ import connectors.DynamicComponentCreationConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
-import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicURIConsumer;
-import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicURIProvider;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
-import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 import interfaces.DynamicComponentCreationI;
 import port.DynamicComponentCreationOutboundPort;
 
