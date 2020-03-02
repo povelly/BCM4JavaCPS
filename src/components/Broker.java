@@ -203,80 +203,93 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		this.lock.readLock().unlock();
 	}
 
-	// TODO a mettre a jour en fonction de la methode publish basique
 	@Override
 	public void publish(MessageI m, String[] topics) {
+		System.out.println("broker reçoit, thread : " + Thread.currentThread().getId());
+		for (String topic : topics) {
+			this.lock.readLock().lock();
+			this.createTopic(topic);
+			this.topics.get(topic).addMessage(m);
+			this.lock.readLock().unlock();
+		}
+
 		this.lock.writeLock().lock();
-		try {
-			for (String topic : topics) {
-				this.createTopic(topic);
-				this.topics.get(topic).addMessage(m);
-			}
-			List<String> notifiedSubs = new ArrayList<>();
-			for (String topic : topics) {
-				for (String subscriber : this.topics.get(topic).getSubscribers()) {
-					if (!notifiedSubs.contains(subscriber)) {
-						notifiedSubs.add(subscriber);
-						for (BrokerReceptionOutboundPort brop : brops) {
-							try {
-								if (brop.getServerPortURI().equals(subscriber)
-										&& (this.topics.get(topic).getFilter(subscriber) == null
-												|| this.topics.get(topic).getFilter(subscriber).filter(m)))
-									brop.acceptMessage(m);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+		List<String> notifiedSubs = new ArrayList<>();
+		for (String topic : topics) {
+			for (String subscriber : this.topics.get(topic).getSubscribers()) {
+				if (!notifiedSubs.contains(subscriber)) {
+					notifiedSubs.add(subscriber);
+					for (BrokerReceptionOutboundPort brop : brops) {
+						try {
+							if (brop.getServerPortURI().equals(subscriber)
+									&& (this.topics.get(topic).getFilter(subscriber) == null
+											|| this.topics.get(topic).getFilter(subscriber).filter(m)))
+								this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
+									try {
+										System.out.println("broker envoie, thread : " + Thread.currentThread().getId());
+										brop.acceptMessage(m);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								});
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				}
 			}
-		} finally {
-			this.lock.writeLock().unlock();
 		}
+		this.lock.writeLock().unlock();
 	}
 
-	// TODO a mettre a jour en fonction de la methode publish basique
 	@Override
 	public void publish(MessageI[] ms, String topic) {
-		this.lock.writeLock().lock();
-		try {
-			for (MessageI m : ms)
-				publish(m, topic);
-		} finally {
-			this.lock.writeLock().unlock();
-		}
+		for (MessageI m : ms)
+			publish(m, topic);
 	}
 
 	// TODO a mettre a jour en fonction de la methode publish basique
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
-		this.lock.writeLock().lock();
-		try {
-			for (String topic : topics) {
-				this.createTopic(topic);
-				for (MessageI m : ms)
-					this.topics.get(topic).addMessage(m);
-			}
-			List<String> notifiedSubs = new ArrayList<>();
-			for (String topic : topics)
-				for (String subscriber : this.topics.get(topic).getSubscribers())
-					if (!notifiedSubs.contains(subscriber)) {
-						notifiedSubs.add(subscriber);
-						for (MessageI m : ms)
-							for (BrokerReceptionOutboundPort brop : brops) {
-								try {
-									if (brop.getServerPortURI().equals(subscriber)
-											&& (this.topics.get(topic).getFilter(subscriber) == null
-													|| this.topics.get(topic).getFilter(subscriber).filter(m)))
-										brop.acceptMessage(m);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-					}
-		} finally {
-			this.lock.writeLock().unlock();
+		System.out.println("broker reçoit, thread : " + Thread.currentThread().getId());
+		for (String topic : topics) {
+			this.lock.readLock().lock();
+			this.createTopic(topic);
+			this.lock.readLock().unlock();
 		}
+
+		this.lock.writeLock().lock();
+		for (String topic : topics) {
+			for (MessageI m : ms)
+				this.topics.get(topic).addMessage(m);
+		}
+		List<String> notifiedSubs = new ArrayList<>();
+		for (String topic : topics)
+			for (String subscriber : this.topics.get(topic).getSubscribers())
+				if (!notifiedSubs.contains(subscriber)) {
+					notifiedSubs.add(subscriber);
+					for (MessageI m : ms)
+						for (BrokerReceptionOutboundPort brop : brops) {
+							try {
+								if (brop.getServerPortURI().equals(subscriber)
+										&& (this.topics.get(topic).getFilter(subscriber) == null
+												|| this.topics.get(topic).getFilter(subscriber).filter(m)))
+
+									this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
+										try {
+											System.out.println(
+													"broker envoie, thread : " + Thread.currentThread().getId());
+											brop.acceptMessage(m);
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+									});
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+				}
+		this.lock.writeLock().unlock();
 	}
 
 	@Override
