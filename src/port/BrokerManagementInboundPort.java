@@ -99,7 +99,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
 		try {
-			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex("subscription"), owner -> {
+			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI), owner -> {
 				((Broker) owner).subscribe(topics, inboundPortURI);
 				return null;
 			});
@@ -111,7 +111,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
 		try {
-			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex("subscription"), owner -> {
+			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI), owner -> {
 				((Broker) owner).subscribe(topic, filter, inboundPortURI);
 				return null;
 			});
@@ -123,7 +123,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		try {
-			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex("subscription"), owner -> {
+			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI), owner -> {
 				((Broker) owner).modifyFilter(topic, newFilter, inboundPortURI);
 				return null;
 			});
@@ -135,7 +135,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
 		try {
-			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex("subscription"), owner -> {
+			this.getOwner().handleRequestAsync(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI), owner -> {
 				((Broker) owner).unsubscribe(topic, inboundPortURI);
 				return null;
 			});

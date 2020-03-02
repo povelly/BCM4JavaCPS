@@ -33,8 +33,8 @@ import port.BrokerReceptionOutboundPort;
 public class Broker extends AbstractComponent implements ManagementCI, PublicationCI {
 
 	// Executor services uris
-	private final String RECEPTION_EXECUTOR_URI = "reception";
-	private final String ENVOIE_EXECUTOR_URI = "envoie";
+	public static final String RECEPTION_EXECUTOR_URI = "reception";
+	public static final String ENVOIE_EXECUTOR_URI = "envoie";
 
 	// ports du composant
 	protected List<BrokerReceptionOutboundPort> brops = new ArrayList<>();
