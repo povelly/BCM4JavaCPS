@@ -27,7 +27,7 @@ public class PublisherClientPlugin extends AbstractPlugin
 		this.pipUri = pipUri;
 		this.mipUri = mipUri;
 	}
-
+	
 	/***********************************************************************
 	 * 
 	 * CYCLE DE VIE
