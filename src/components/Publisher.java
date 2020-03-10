@@ -37,7 +37,6 @@ public class Publisher extends AbstractComponent {
 
 	@Override
 	public void execute() throws Exception {
-		Thread.sleep(2000); // pour attendre que subscriber ai souscrit avant d'envoyer message
 		super.execute();
 		// envoie 30 messages basics de tests
 		for (int i = 0; i < 30; i++)

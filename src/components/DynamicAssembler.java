@@ -1,30 +1,34 @@
 package components;
 
-import connectors.DynamicComponentCreationConnector;
+import java.util.HashSet;
+import java.util.Set;
+
+import deployment.CVM;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import interfaces.DynamicComponentCreationI;
-import port.DynamicComponentCreationOutboundPort;
+import fr.sorbonne_u.components.pre.dcc.connectors.DynamicComponentCreationConnector;
+import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
+import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPort;
 
 @RequiredInterfaces(required = { DynamicComponentCreationI.class })
 public class DynamicAssembler extends AbstractComponent {
 
 	protected static final String PROVIDED_URI_PREFIX = "generated-URI-";
 
+	protected Set<String> deployerURISet;
+
+	// DynamicComponentCreation ports
 	protected DynamicComponentCreationOutboundPort portToSubscriberJVM;
 	protected DynamicComponentCreationOutboundPort portToBrokerJVM;
 	protected DynamicComponentCreationOutboundPort portToPublisherJVM;
 
+	// JVMURIs
 	protected String subscriberJVMURI;
 	protected String brokerJVMURI;
 	protected String publisherJVMURI;
-
-	protected String brokerPIP_uri;
-	protected String brokerMIP_uri;
-	protected String brokerMIP2_uri;
 
 	protected DynamicAssembler(String subscriberJVMURI, String brokerJVMURI, String publisherJVMURI) {
 		super(1, 0);
@@ -36,36 +40,27 @@ public class DynamicAssembler extends AbstractComponent {
 	@Override
 	public void start() throws ComponentStartException {
 		super.start();
-
 		try {
+			// portToSubscriber
 			this.portToSubscriberJVM = new DynamicComponentCreationOutboundPort(this);
-			this.portToSubscriberJVM.localPublishPort();
+			this.portToSubscriberJVM.publishPort();
 			this.doPortConnection(this.portToSubscriberJVM.getPortURI(),
 					this.subscriberJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 					DynamicComponentCreationConnector.class.getCanonicalName());
 
+			// portToPublisher
 			this.portToPublisherJVM = new DynamicComponentCreationOutboundPort(this);
-			this.portToPublisherJVM.localPublishPort();
+			this.portToPublisherJVM.publishPort();
 			this.doPortConnection(this.portToPublisherJVM.getPortURI(),
 					this.subscriberJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 					DynamicComponentCreationConnector.class.getCanonicalName());
 
+			// portToBroker
 			this.portToBrokerJVM = new DynamicComponentCreationOutboundPort(this);
-			this.portToBrokerJVM.localPublishPort();
+			this.portToBrokerJVM.publishPort();
 			this.doPortConnection(this.portToBrokerJVM.getPortURI(),
 					this.brokerJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 					DynamicComponentCreationConnector.class.getCanonicalName());
-
-			this.runTask(new AbstractComponent.AbstractTask() {
-				@Override
-				public void run() {
-					try {
-						((DynamicAssembler) this.getTaskOwner()).dynamicDeploy();
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
 
 		} catch (Exception e) {
 			throw new ComponentStartException(e);
@@ -73,22 +68,57 @@ public class DynamicAssembler extends AbstractComponent {
 	}
 
 	@Override
+	public void execute() throws Exception {
+		super.execute();
+		assert this.portToSubscriberJVM != null;
+		assert this.portToSubscriberJVM.connected();
+		assert this.portToBrokerJVM != null;
+		assert this.portToBrokerJVM.connected();
+		assert this.portToPublisherJVM != null;
+		assert this.portToPublisherJVM.connected();
+		this.deployerURISet = new HashSet<String>();
+		// on va créer les composants
+		String BrokerUri = this.portToBrokerJVM.createComponent(Broker.class.getCanonicalName(),
+				new Object[] { CVM.brokerMIP_uri, CVM.brokerMIP2_uri, CVM.brokerPIP_uri });
+		deployerURISet.add(BrokerUri);
+
+		String subscriberUri = this.portToSubscriberJVM.createComponent(Subscriber.class.getCanonicalName(),
+				new Object[] { CVM.brokerMIP_uri });
+		deployerURISet.add(subscriberUri);
+
+		String publisherUri = this.portToPublisherJVM.createComponent(Publisher.class.getCanonicalName(),
+				new Object[] { CVM.brokerPIP_uri, CVM.brokerMIP2_uri });
+		deployerURISet.add(publisherUri);
+
+		// on appel start sur les composants
+		portToSubscriberJVM.startComponent(subscriberUri);
+		portToPublisherJVM.startComponent(publisherUri);
+		portToBrokerJVM.startComponent(BrokerUri);
+
+		// on execute les composants
+		portToSubscriberJVM.executeComponent(subscriberUri);
+		Thread.sleep(2000);
+		portToPublisherJVM.executeComponent(publisherUri);
+	}
+
+	@Override
 	public void finalise() throws Exception {
-		if (this.portToSubscriberJVM.connected()) {
+		// on deconnecte les ports
+		if (this.portToSubscriberJVM.connected())
 			this.doPortDisconnection(this.portToSubscriberJVM.getPortURI());
-		}
-		if (this.portToBrokerJVM.connected()) {
+
+		if (this.portToBrokerJVM.connected())
 			this.doPortDisconnection(this.portToBrokerJVM.getPortURI());
-		}
-		if (this.portToPublisherJVM.connected()) {
+
+		if (this.portToPublisherJVM.connected())
 			this.doPortDisconnection(this.portToPublisherJVM.getPortURI());
-		}
 
 		super.finalise();
 	}
 
 	@Override
 	public void shutdown() throws ComponentShutdownException {
+		// on depublie les ports
 		try {
 			this.portToSubscriberJVM.unpublishPort();
 			this.portToBrokerJVM.unpublishPort();
@@ -102,6 +132,7 @@ public class DynamicAssembler extends AbstractComponent {
 
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
+		/// on depublie les ports
 		try {
 			this.portToSubscriberJVM.unpublishPort();
 			this.portToBrokerJVM.unpublishPort();
@@ -111,73 +142,6 @@ public class DynamicAssembler extends AbstractComponent {
 		}
 
 		super.shutdownNow();
-	}
-
-	public void dynamicDeploy() throws Exception {
-		assert this.portToSubscriberJVM != null;
-		assert this.portToSubscriberJVM.connected();
-		assert this.portToBrokerJVM != null;
-		assert this.portToBrokerJVM.connected();
-		assert this.portToPublisherJVM != null;
-		assert this.portToPublisherJVM.connected();
-
-//		// call the dynamic component creator of the provider JVM to create
-//		// the provider component
-//		String providerRIPURI = this.portToPublisherJVM.createComponent(Publisher.class.getCanonicalName(),
-//				new Object[] { brokerPIP_uri, brokerMIP_uri });
-//
-//		// call the dynamic component creator of the consumer JVM to create
-//		// the provider component
-//		String consumerRIPURI = this.portToSubscriberJVM.createComponent(Subscriber.class.getCanonicalName(),
-//				new Object[] { brokerMIP_uri });
-//
-//		String brokerRIPURI = this.portToSubscriberJVM.createComponent(Broker.class.getCanonicalName(),
-//				new Object[] {});
-//
-//		this.addRequiredInterface(ReflectionI.class);
-//		ReflectionOutboundPort rop = new ReflectionOutboundPort(this);
-//		rop.localPublishPort();
-//
-//		// connect to the provider (server) component
-//		rop.doConnection(providerRIPURI, ReflectionConnector.class.getCanonicalName());
-//		// toggle logging on the provider component
-//		rop.toggleTracing();
-//		// get the URI of the URI provider inbound port of the provider
-//		// component.
-//		String[] uris = rop.findInboundPortURIsFromInterface(URIProviderI.class);
-//		assert uris != null && uris.length == 1;
-//		this.providerInboundPortURI = uris[0];
-//		this.doPortDisconnection(rop.getPortURI());
-//
-//		// connect to the consumer (client) component
-//		rop.doConnection(consumerRIPURI, ReflectionConnector.class.getCanonicalName());
-//		// toggle logging on the consumer component
-//		rop.toggleTracing();
-//		// get the URI of the launch inbound port of the consumer component.
-//		uris = rop.findInboundPortURIsFromInterface(URIConsumerLaunchI.class);
-//		assert uris != null && uris.length == 1;
-//		this.consumerLaunchInboundPortURI = uris[0];
-//		// get the URI of the URI consumer outbound port of the consumer
-//		// component.
-//		uris = rop.findOutboundPortURIsFromInterface(URIConsumerI.class);
-//		assert uris != null && uris.length == 1;
-//		this.consumerOutboundPortURI = uris[0];
-//		// connect the consumer outbound port top the provider inbound one.
-//		rop.doPortConnection(this.consumerOutboundPortURI, this.providerInboundPortURI,
-//				URIServiceConnector.class.getCanonicalName());
-//		this.doPortDisconnection(rop.getPortURI());
-//		rop.unpublishPort();
-//
-//		this.runTask(new AbstractComponent.AbstractTask() {
-//			@Override
-//			public void run() {
-//				try {
-//					((DynamicAssembler) this.getTaskOwner()).launch();
-//				} catch (Exception e) {
-//					throw new RuntimeException(e);
-//				}
-//			}
-//		});
 	}
 
 }
