@@ -1,7 +1,9 @@
 package message;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import fr.sorbonne_u.components.AbstractPort;
 import interfaces.MessageI;
 
 /**
@@ -20,8 +22,10 @@ public class Message implements MessageI {
 	private Serializable payload;
 
 	public Message(Properties properties, Serializable payload) {
-		this.URI = "URI1"; // TODO
-		this.timeStamp = new TimeStamp(); // TODO
+		this.URI = AbstractPort.generatePortURI();
+		this.timeStamp = new TimeStamp();
+		Date date = new Date();
+		timeStamp.setTime(date.getTime());
 		this.properties = properties;
 		this.payload = payload;
 	}

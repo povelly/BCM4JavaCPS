@@ -126,7 +126,6 @@ public class DynamicAssembler extends AbstractComponent {
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
-
 		super.shutdown();
 	}
 
