@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Lanceur pour la suite de test, à executer avec JUnit 4
+ * Lanceur pour la suite de test, à executer avec JUnit
  * 
  * @author Bello Velly
  *
