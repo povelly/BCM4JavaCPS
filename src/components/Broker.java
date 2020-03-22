@@ -89,10 +89,9 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 			for (BrokerReceptionOutboundPort brop : brops)
 				this.doPortDisconnection(brop.getPortURI());
 		} catch (Exception e) {
-			System.out.println("ERRRRRRR");
 			throw new ComponentShutdownException(e);
 		}
-		super.shutdown();
+//		super.shutdown();
 	}
 
 	@Override
