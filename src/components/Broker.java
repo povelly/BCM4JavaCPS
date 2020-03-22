@@ -89,6 +89,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 			for (BrokerReceptionOutboundPort brop : brops)
 				this.doPortDisconnection(brop.getPortURI());
 		} catch (Exception e) {
+			System.out.println("ERRRRRRR");
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();
@@ -192,6 +193,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 				// si il n'a pas deja reçu les messages
 				if (!notifiedSubs.contains(subscriber)) {
+					notifiedSubs.add(subscriber);
 					for (MessageI m : ms)
 
 						// on cherche le port associé au subscriber
@@ -203,7 +205,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 
 								// on à le bon port
 								if (urisEq && filterOk) {
-									notifiedSubs.add(subscriber);
+
 									// on envoie le message
 									this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
 										try {

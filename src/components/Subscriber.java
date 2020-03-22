@@ -42,13 +42,38 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	public void execute() throws Exception {
 		super.execute();
 
-		// test des méthodes de création de topics
+		System.out.println("Test des méthodes de ManagementImplementationI :\n");
+		// test des méthodes de création de topics + isTopic
+		System.out.println("Test createTopic(\"topic1\") + isTopic");
 		subscriberPlugin.createTopic("topic1");
-		System.out.println(subscriberPlugin.isTopic("topic1"));
+		System.out.println("topic 1 créer : " + subscriberPlugin.isTopic("topic1"));
+
+		System.out.println("Test createTopic({\"topic2\", \"topic3\"}) + isTopic");
+		subscriberPlugin.createTopics(new String[] { "topic2", "topic3" });
+		System.out.println("topic 2 et 3 créer : " + subscriberPlugin.isTopic("topic2") + " / "
+				+ subscriberPlugin.isTopic("topic3"));
+
+		// test getTopics
+		String[] topics = subscriberPlugin.getTopics();
+		System.out.println("\ntest getTopics");
+		for (String s : topics)
+			System.out.println(s);
+		System.out.println("Si ok, ce sont affichés topic1, topic2 et topic3");
+
+		// test destroyTopic
+		System.out.println("\ntest destroyTopic(\"topic1\")");
+		subscriberPlugin.destroyTopic("topic1");
+		System.out.println("topic1 existe encore :" + subscriberPlugin.isTopic("topic1"));
+
+		// tests des méthodes de subscription :
+		System.out.println(
+				"\n\nrecreation de topic1 puis test des méthodes des méthodes de PublicationCI, ReceptionCI, et SubscriptionImplementationI :");
 
 		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
-//		subscriberPlugin.subscribe("topic1", ripUri);
-//		subscriberPlugin.subscribe("topic2", m -> (false), ripUri);
+		subscriberPlugin.subscribe("topic1", m -> (false), ripUri);
+		subscriberPlugin.subscribe(new String[] { "topic2", "topic3" }, ripUri);
+		subscriberPlugin.subscribe("topic4", ripUri);
+		subscriberPlugin.unsubscribe("topic4", ripUri);
 	}
 
 	/***********************************************************************

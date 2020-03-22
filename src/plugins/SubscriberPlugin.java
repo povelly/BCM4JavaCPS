@@ -75,6 +75,7 @@ public class SubscriberPlugin extends AbstractPlugin
 	public void uninstall() throws Exception {
 		// reception
 		this.rip.unpublishPort();
+		this.rip.destroyPort();
 		this.removeOfferedInterface(ReceptionCI.class);
 		// management
 		this.mop.unpublishPort();
