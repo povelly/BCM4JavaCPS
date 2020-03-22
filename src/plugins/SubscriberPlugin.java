@@ -4,6 +4,7 @@ import connectors.ManagementConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import interfaces.ManagementCI;
+import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
@@ -19,7 +20,8 @@ import port.ReceptionInboundPortForPlugin;
  * @author Bello Velly
  *
  */
-public class SubscriberPlugin extends AbstractPlugin implements ReceptionImplementationI, SubscriptionImplementationI {
+public class SubscriberPlugin extends AbstractPlugin
+		implements ReceptionImplementationI, SubscriptionImplementationI, ManagementImplementationI {
 
 	private static final long serialVersionUID = 1L;
 	protected ReceptionInboundPortForPlugin rip;
@@ -123,6 +125,36 @@ public class SubscriberPlugin extends AbstractPlugin implements ReceptionImpleme
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) throws Exception {
 		this.mop.unsubscribe(topic, inboundPortURI);
+	}
+
+	@Override
+	public void createTopic(String topic) throws Exception {
+		this.mop.createTopic(topic);
+	}
+
+	@Override
+	public void createTopics(String[] topics) throws Exception {
+		this.mop.createTopics(topics);
+	}
+
+	@Override
+	public void destroyTopic(String topic) throws Exception {
+		this.mop.destroyTopic(topic);
+	}
+
+	@Override
+	public boolean isTopic(String topic) throws Exception {
+		return this.mop.isTopic(topic);
+	}
+
+	@Override
+	public String[] getTopics() throws Exception {
+		return this.mop.getTopics();
+	}
+
+	@Override
+	public String getPublicationPortURI() throws Exception {
+		return this.mop.getPublicationPortURI();
 	}
 
 }

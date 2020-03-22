@@ -41,9 +41,14 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 	@Override
 	public void execute() throws Exception {
 		super.execute();
+
+		// test des méthodes de création de topics
+		subscriberPlugin.createTopic("topic1");
+		System.out.println(subscriberPlugin.isTopic("topic1"));
+
 		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
-		subscriberPlugin.subscribe("topic1", ripUri);
-		subscriberPlugin.subscribe("topic2", m -> (false), ripUri);
+//		subscriberPlugin.subscribe("topic1", ripUri);
+//		subscriberPlugin.subscribe("topic2", m -> (false), ripUri);
 	}
 
 	/***********************************************************************
