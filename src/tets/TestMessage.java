@@ -6,6 +6,12 @@ import org.junit.Test;
 import message.Message;
 import message.Properties;
 
+/**
+ * Tests pour la classe Message
+ * 
+ * @author Bello Velly
+ *
+ */
 public class TestMessage {
 
 	@Test

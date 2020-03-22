@@ -5,6 +5,12 @@ import org.junit.Test;
 
 import message.TimeStamp;
 
+/**
+ * Tests pour la classe TimeStamp
+ * 
+ * @author Bello Velly
+ *
+ */
 public class TestTimeStamp {
 
 	@Test

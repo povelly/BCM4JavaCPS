@@ -5,6 +5,12 @@ import org.junit.Test;
 
 import message.Properties;
 
+/**
+ * Tests pour la classe Properties
+ * 
+ * @author Bello Velly
+ *
+ */
 public class TestProperties {
 
 	@Test

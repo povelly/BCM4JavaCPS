@@ -7,6 +7,12 @@ import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import message.Topic;
 
+/**
+ * Tests pour la classe Topic
+ * 
+ * @author Bello Velly
+ *
+ */
 public class TestTopic {
 
 	@Test

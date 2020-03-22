@@ -5,6 +5,13 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
 
+/**
+ * Port sortant Management pour Plugin
+ * 
+ * 
+ * @author Bello Velly
+ *
+ */
 public class ManagementOutboundPortForPlugin extends AbstractOutboundPort implements ManagementCI {
 
 	private static final long serialVersionUID = 1L;

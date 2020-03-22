@@ -12,6 +12,12 @@ import interfaces.PublicationsImplementationI;
 import port.ManagementOutboundPortForPlugin;
 import port.PublicationOutboundPortForPlugin;
 
+/**
+ * Plugin pour le Publisher
+ * 
+ * @author Bello Velly
+ *
+ */
 public class PublisherClientPlugin extends AbstractPlugin
 		implements PublicationsImplementationI, ManagementImplementationI {
 
@@ -27,7 +33,7 @@ public class PublisherClientPlugin extends AbstractPlugin
 		this.pipUri = pipUri;
 		this.mipUri = mipUri;
 	}
-	
+
 	/***********************************************************************
 	 * 
 	 * CYCLE DE VIE

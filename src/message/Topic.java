@@ -3,6 +3,8 @@ package message;
 /**
  * Classe representant un Topic, il contient la liste de touts ses messages
  * ainsi qu'un ensemble avec ses abonnés et pour chaques abonné son filtre
+ * 
+ * 
  * @author Bello Velly
  */
 import java.util.ArrayList;

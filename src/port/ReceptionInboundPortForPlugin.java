@@ -8,6 +8,12 @@ import interfaces.MessageI;
 import interfaces.ReceptionCI;
 import interfaces.ReceptionImplementationI;
 
+/**
+ * Port entrant de recepetion pour plugin
+ * 
+ * @author Bello Velly
+ *
+ */
 public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin implements ReceptionCI {
 
 	private static final long serialVersionUID = 1L;

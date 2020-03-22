@@ -5,6 +5,12 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
 
+/**
+ * Port sortant de publication pour plugin
+ * 
+ * @author Bello Velly
+ *
+ */
 public class PublicationOutboundPortForPlugin extends AbstractOutboundPort implements PublicationCI {
 
 	private static final long serialVersionUID = 1L;

@@ -13,6 +13,12 @@ import fr.sorbonne_u.components.pre.dcc.connectors.DynamicComponentCreationConne
 import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
 import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPort;
 
+/**
+ * Class reprensentant l'assembleur dynamique pour les composants
+ * 
+ * @author Bello Velly
+ *
+ */
 @RequiredInterfaces(required = { DynamicComponentCreationI.class })
 public class DynamicAssembler extends AbstractComponent {
 

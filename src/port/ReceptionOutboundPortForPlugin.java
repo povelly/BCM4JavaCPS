@@ -5,6 +5,12 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
 
+/**
+ * Port sortant de recepetion pour plugin
+ * 
+ * @author Bello Velly
+ *
+ */
 public class ReceptionOutboundPortForPlugin extends AbstractOutboundPort implements ReceptionCI {
 
 	private static final long serialVersionUID = 1L;
