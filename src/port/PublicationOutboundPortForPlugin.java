@@ -4,6 +4,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
+import interfaces.PublicationsImplementationI;
 
 /**
  * Port sortant de publication pour plugin
@@ -25,22 +26,22 @@ public class PublicationOutboundPortForPlugin extends AbstractOutboundPort imple
 
 	@Override
 	public void publish(MessageI m, String topic) throws Exception {
-		((PublicationCI) this.connector).publish(m, topic);
+		((PublicationsImplementationI) this.connector).publish(m, topic);
 	}
 
 	@Override
 	public void publish(MessageI m, String[] topics) throws Exception {
-		((PublicationCI) this.connector).publish(m, topics);
+		((PublicationsImplementationI) this.connector).publish(m, topics);
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String topic) throws Exception {
-		((PublicationCI) this.connector).publish(ms, topic);
+		((PublicationsImplementationI) this.connector).publish(ms, topic);
 	}
 
 	@Override
 	public void publish(MessageI[] ms, String[] topics) throws Exception {
-		((PublicationCI) this.connector).publish(ms, topics);
+		((PublicationsImplementationI) this.connector).publish(ms, topics);
 	}
 
 }

@@ -23,6 +23,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		this.executorIndex = executorIndex;
 	}
 
+	// TODO : revoir les appels synchrones / asynchrones (voir fiche prof sur
+	// soutenance mi semestre)
+
 	@Override
 	public void createTopic(String topic) {
 		try {

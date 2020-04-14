@@ -1,6 +1,5 @@
 package port;
 
-import components.Subscriber;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.forplugins.AbstractInboundPortForPlugin;
@@ -31,8 +30,13 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	@Override
 	public void acceptMessage(MessageI m) throws Exception {
 		try {
-			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI,
-					owner -> ((Subscriber) owner).acceptMessage(m));
+			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI, owner -> {
+				try {
+					((ReceptionImplementationI) owner).acceptMessage(m);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,8 +45,13 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	@Override
 	public void acceptMessage(MessageI[] ms) throws Exception {
 		try {
-			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI,
-					owner -> ((Subscriber) owner).acceptMessage(ms));
+			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI, owner -> {
+				try {
+					((ReceptionImplementationI) owner).acceptMessage(ms);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

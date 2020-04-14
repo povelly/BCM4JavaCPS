@@ -5,6 +5,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.MessageI;
 import interfaces.ReceptionCI;
+import interfaces.ReceptionImplementationI;
 
 /**
  * Port de sortie du Broker pour l'interface ReceptionCI
@@ -28,12 +29,12 @@ public class BrokerReceptionOutboundPort extends AbstractOutboundPort implements
 
 	@Override
 	public void acceptMessage(MessageI m) throws Exception {
-		((ReceptionCI) this.connector).acceptMessage(m);
+		((ReceptionImplementationI) this.connector).acceptMessage(m);
 	}
 
 	@Override
 	public void acceptMessage(MessageI[] ms) throws Exception {
-		((ReceptionCI) this.connector).acceptMessage(ms);
+		((ReceptionImplementationI) this.connector).acceptMessage(ms);
 	}
 
 }
