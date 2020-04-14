@@ -26,11 +26,7 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	@Override
 	public void publish(MessageI m, String topic) {
 		try {
-			this.getOwner().handleRequestAsync(executorIndex, owner -> {
-				((Broker) owner).publish(m, topic);
-				;
-				return null;
-			});
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).publish(m, topic));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,10 +35,7 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	@Override
 	public void publish(MessageI m, String[] topics) {
 		try {
-			this.getOwner().handleRequestAsync(executorIndex, owner -> {
-				((Broker) owner).publish(m, topics);
-				return null;
-			});
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).publish(m, topics));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,10 +44,7 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	@Override
 	public void publish(MessageI[] ms, String topic) {
 		try {
-			this.getOwner().handleRequestAsync(executorIndex, owner -> {
-				((Broker) owner).publish(ms, topic);
-				return null;
-			});
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).publish(ms, topic));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,10 +53,7 @@ public class BrokerPublicationInboundPort extends AbstractInboundPort implements
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
 		try {
-			this.getOwner().handleRequestAsync(executorIndex, owner -> {
-				((Broker) owner).publish(ms, topics);
-				return null;
-			});
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).publish(ms, topics));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

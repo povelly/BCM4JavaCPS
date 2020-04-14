@@ -31,10 +31,8 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	@Override
 	public void acceptMessage(MessageI m) throws Exception {
 		try {
-			this.getOwner().handleRequestAsync(AbstractComponent.STANDARD_REQUEST_HANDLER_URI, owner -> {
-				((Subscriber) owner).acceptMessage(m);
-				return null;
-			});
+			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI,
+					owner -> ((Subscriber) owner).acceptMessage(m));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -43,10 +41,8 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	@Override
 	public void acceptMessage(MessageI[] ms) throws Exception {
 		try {
-			this.getOwner().handleRequestAsync(AbstractComponent.STANDARD_REQUEST_HANDLER_URI, owner -> {
-				((Subscriber) owner).acceptMessage(ms);
-				return null;
-			});
+			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI,
+					owner -> ((Subscriber) owner).acceptMessage(ms));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

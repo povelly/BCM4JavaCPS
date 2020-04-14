@@ -63,6 +63,7 @@ public class Subscriber extends AbstractComponent implements ReceptionCI {
 		// test destroyTopic
 		System.out.println("\ntest destroyTopic(\"topic1\")");
 		subscriberPlugin.destroyTopic("topic1");
+		Thread.sleep(500);
 		System.out.println("topic1 existe encore :" + subscriberPlugin.isTopic("topic1"));
 
 		// tests des méthodes de subscription :
