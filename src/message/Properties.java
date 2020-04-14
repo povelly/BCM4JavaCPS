@@ -52,78 +52,106 @@ public class Properties implements Serializable {
 		properties.put(name, v);
 	}
 
-	public boolean getBooleanProp(String name) throws BadPropertieType {
+	public boolean getBooleanProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Boolean)
 			return (boolean) res;
-		throw new BadPropertieType("Properties shloud be a boolean");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a boolean");
 	}
 
-	public byte getByteProp(String name) throws BadPropertieType {
+	public byte getByteProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Byte)
 			return (byte) res;
-		throw new BadPropertieType("Properties shloud be a byte");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a byte");
 	}
 
-	public char getCharProp(String name) throws BadPropertieType {
+	public char getCharProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Character)
 			return (char) res;
-		throw new BadPropertieType("Properties shloud be a char");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a char");
 	}
 
-	public double getDoubleProp(String name) throws BadPropertieType {
+	public double getDoubleProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Double)
 			return (double) res;
-		throw new BadPropertieType("Properties shloud be a double");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a double");
 	}
 
-	public float getFloatProp(String name) throws BadPropertieType {
+	public float getFloatProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Float)
 			return (float) res;
-		throw new BadPropertieType("Properties shloud be a float");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a float");
 	}
 
-	public int getIntProp(String name) throws BadPropertieType {
+	public int getIntProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Integer)
 			return (int) res;
-		throw new BadPropertieType("Properties shloud be an int");
+		throw new BadPropertyType("Propertiy " + name + " shloud be an int");
 	}
 
-	public long getLongProp(String name) throws BadPropertieType {
+	public long getLongProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Long)
 			return (long) res;
-		throw new BadPropertieType("Properties shloud be a long");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a long");
 	}
 
-	public short getShortProp(String name) throws BadPropertieType {
+	public short getShortProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof Short)
 			return (short) res;
-		throw new BadPropertieType("Properties shloud be a short");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a short");
 	}
 
-	public String getStringProp(String name) throws BadPropertieType {
+	public String getStringProp(String name) throws BadPropertyType {
 		Object res = properties.get(name);
+		if (res == null)
+			throw new PropertyDoesntExist(name);
 		if (res instanceof String)
 			return (String) res;
-		throw new BadPropertieType("Properties shloud be a String");
+		throw new BadPropertyType("Propertiy " + name + " shloud be a String");
 	}
 
 	/**
-	 * Propertie Exception class
+	 * Properties Exception classes
 	 */
-	static class BadPropertieType extends RuntimeException {
+	static class BadPropertyType extends RuntimeException {
 
 		private static final long serialVersionUID = 1L;
 
-		public BadPropertieType(String text) {
+		public BadPropertyType(String text) {
 			super(text);
 		}
+	}
+
+	static class PropertyDoesntExist extends RuntimeException {
+
+		private static final long serialVersionUID = 1L;
+
+		public PropertyDoesntExist(String name) {
+			super("Property " + name + " doesnt exist.");
+		}
+
 	}
 }
