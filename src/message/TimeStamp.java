@@ -12,7 +12,7 @@ public class TimeStamp {
 	protected String timestamper;
 
 	public boolean isInitialized() {
-		return timestamper != null;
+		return timestamper != null && time != 0;
 	}
 
 	public long getTime() {

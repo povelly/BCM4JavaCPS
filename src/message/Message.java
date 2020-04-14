@@ -1,6 +1,7 @@
 package message;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.util.Date;
 
 import fr.sorbonne_u.components.AbstractPort;
@@ -26,6 +27,11 @@ public class Message implements MessageI {
 		this.timeStamp = new TimeStamp();
 		Date date = new Date();
 		timeStamp.setTime(date.getTime());
+		try {
+			timeStamp.setTimeStamper(InetAddress.getLocalHost().toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.properties = properties;
 		this.payload = payload;
 	}
