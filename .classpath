@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="lib/BCM4Java-19022020.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BCM4Java-19022020-src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

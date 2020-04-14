@@ -256,7 +256,6 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 			topics.put(topic, new Topic());
 		// on ajoute le subscriber au topic
 		topics.get(topic).addSubscription(inboundPortURI, null);
-		this.lock.writeLock().unlock();
 
 		// on créer un port sortant et le lie a celui du subscriber
 		try {
@@ -273,6 +272,7 @@ public class Broker extends AbstractComponent implements ManagementCI, Publicati
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		this.lock.writeLock().unlock();
 	}
 
 	@Override
