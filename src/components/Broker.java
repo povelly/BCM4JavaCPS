@@ -13,10 +13,13 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.ManagementCI;
+import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
+import interfaces.PublicationsImplementationI;
 import interfaces.ReceptionCI;
+import interfaces.SubscriptionImplementationI;
 import message.Topic;
 import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
@@ -30,7 +33,8 @@ import port.BrokerReceptionOutboundPort;
 
 @RequiredInterfaces(required = { ReceptionCI.class })
 @OfferedInterfaces(offered = { ManagementCI.class, PublicationCI.class })
-public class Broker extends AbstractComponent implements ManagementCI, PublicationCI {
+public class Broker extends AbstractComponent
+		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
 
 	// Executor services uris
 	public static final String RECEPTION_EXECUTOR_URI = "reception";

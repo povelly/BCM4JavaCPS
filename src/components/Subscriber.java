@@ -3,7 +3,7 @@ package components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
 import interfaces.MessageI;
-import interfaces.ReceptionCI;
+import interfaces.ReceptionImplementationI;
 import plugins.SubscriberPlugin;
 
 /**
@@ -13,7 +13,7 @@ import plugins.SubscriberPlugin;
  *
  */
 
-public class Subscriber extends AbstractComponent implements ReceptionCI {
+public class Subscriber extends AbstractComponent implements ReceptionImplementationI {
 
 	protected SubscriberPlugin subscriberPlugin;
 	protected String ripUri;
