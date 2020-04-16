@@ -90,8 +90,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
 		try {
-			this.getOwner().runTask(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI),
-					owner -> ((Broker) owner).subscribe(topics, inboundPortURI));
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).subscribe(topics, inboundPortURI));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,8 +99,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
 		try {
-			this.getOwner().runTask(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI),
-					owner -> ((Broker) owner).subscribe(topic, filter, inboundPortURI));
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).subscribe(topic, filter, inboundPortURI));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -110,7 +108,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		try {
-			this.getOwner().runTask(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI),
+			this.getOwner().runTask(executorIndex,
 					owner -> ((Broker) owner).modifyFilter(topic, newFilter, inboundPortURI));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -120,8 +118,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
 		try {
-			this.getOwner().runTask(this.getOwner().getExecutorServiceIndex(Broker.RECEPTION_EXECUTOR_URI),
-					owner -> ((Broker) owner).unsubscribe(topic, inboundPortURI));
+			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).unsubscribe(topic, inboundPortURI));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
