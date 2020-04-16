@@ -21,7 +21,6 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	// TODO verif les histoires d'uris, surtout ripUri
 	protected Subscriber(String mipServerUri) throws Exception {
 		super(4, 0);
-
 		// verifications
 		assert mipServerUri != null;
 

@@ -129,42 +129,59 @@ public class Broker extends AbstractComponent
 	@Override
 	public void createTopic(String topic) {
 		this.lock.writeLock().lock();
-		if (!isTopic(topic))
-			topics.put(topic, new Topic());
-		this.lock.writeLock().unlock();
+		try {
+			if (!isTopic(topic))
+				topics.put(topic, new Topic());
+		} finally {
+			this.lock.writeLock().unlock();
+		}
 	}
 
 	@Override
 	public void createTopics(String[] toCreate) {
 		this.lock.writeLock().lock();
-		for (String topic : toCreate) {
-			if (!isTopic(topic))
-				topics.put(topic, new Topic());
+		try {
+			for (String topic : toCreate) {
+				if (!isTopic(topic))
+					topics.put(topic, new Topic());
+			}
+		} finally {
+			this.lock.writeLock().unlock();
 		}
-		this.lock.writeLock().unlock();
 	}
 
 	@Override
 	public void destroyTopic(String topic) {
 		this.lock.writeLock().lock();
-		topics.remove(topic);
-		this.lock.writeLock().unlock();
+		try {
+			topics.remove(topic);
+		} finally {
+			this.lock.writeLock().unlock();
+		}
 	}
 
 	@Override
 	public boolean isTopic(String topic) {
+		boolean isTopic;
 		this.lock.readLock().lock();
-		boolean isTopic = topics.containsKey(topic);
-		this.lock.readLock().unlock();
+		try {
+			isTopic = topics.containsKey(topic);
+		} finally {
+			this.lock.readLock().unlock();
+		}
 		return isTopic;
 	}
 
 	@Override
 	public String[] getTopics() {
+		String[] sTopics;
 		this.lock.readLock().lock();
-		Object[] topics = this.topics.keySet().toArray();
-		String[] sTopics = Arrays.stream(topics).toArray(String[]::new);
-		this.lock.readLock().unlock();
+		try {
+			Object[] topics = this.topics.keySet().toArray();
+			sTopics = Arrays.stream(topics).toArray(String[]::new);
+		} finally {
+			this.lock.readLock().unlock();
+		}
 		return sTopics;
 	}
 
@@ -182,50 +199,54 @@ public class Broker extends AbstractComponent
 
 		// on publie les messages dans les topics
 		this.lock.writeLock().lock();
-		for (String topic : topics) {
-			for (MessageI m : ms)
-				this.topics.get(topic).addMessage(m);
-		}
 
-		// list des subscribers à qui on a deja envoyé les messages
-		List<String> notifiedSubs = new ArrayList<>();
+		try {
+			for (String topic : topics) {
+				for (MessageI m : ms)
+					this.topics.get(topic).addMessage(m);
+			}
 
-		// on parcours les subscriber de chaque topics
-		for (String topic : topics)
-			for (String subscriber : this.topics.get(topic).getSubscribers())
+			// list des subscribers à qui on a deja envoyé les messages
+			List<String> notifiedSubs = new ArrayList<>();
 
-				// si il n'a pas deja reçu les messages
-				if (!notifiedSubs.contains(subscriber)) {
-					notifiedSubs.add(subscriber);
-					for (MessageI m : ms)
+			// on parcours les subscriber de chaque topics
+			for (String topic : topics)
+				for (String subscriber : this.topics.get(topic).getSubscribers())
 
-						// on cherche le port associé au subscriber
-						for (BrokerReceptionOutboundPort brop : brops) {
-							try {
-								boolean urisEq = brop.getServerPortURI().equals(subscriber);
-								boolean filterOk = (this.topics.get(topic).getFilter(subscriber) == null
-										|| this.topics.get(topic).getFilter(subscriber).filter(m));
+					// si il n'a pas deja reçu les messages
+					if (!notifiedSubs.contains(subscriber)) {
+						notifiedSubs.add(subscriber);
+						for (MessageI m : ms)
 
-								// on à le bon port
-								if (urisEq && filterOk) {
+							// on cherche le port associé au subscriber
+							for (BrokerReceptionOutboundPort brop : brops) {
+								try {
+									boolean urisEq = brop.getServerPortURI().equals(subscriber);
+									boolean filterOk = (this.topics.get(topic).getFilter(subscriber) == null
+											|| this.topics.get(topic).getFilter(subscriber).filter(m));
 
-									// on envoie le message
-									this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
-										try {
-											System.out.println(
-													"broker envoie, thread : " + Thread.currentThread().getId());
-											brop.acceptMessage(m);
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-									});
+									// on à le bon port
+									if (urisEq && filterOk) {
+
+										// on envoie le message
+										this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
+											try {
+												System.out.println(
+														"broker envoie, thread : " + Thread.currentThread().getId());
+												brop.acceptMessage(m);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+										});
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
-							} catch (Exception e) {
-								e.printStackTrace();
 							}
-						}
-				}
-		this.lock.writeLock().unlock();
+					}
+		} finally {
+			this.lock.writeLock().unlock();
+		}
 	}
 
 	@Override
@@ -255,28 +276,31 @@ public class Broker extends AbstractComponent
 	public void subscribe(String topic, String inboundPortURI) {
 
 		this.lock.writeLock().lock();
-		// si le topic n'existe pas, on l'ajoute
-		if (!topics.containsKey(topic))
-			topics.put(topic, new Topic());
-		// on ajoute le subscriber au topic
-		topics.get(topic).addSubscription(inboundPortURI, null);
-
-		// on créer un port sortant et le lie a celui du subscriber
 		try {
-			BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
-			brop.publishPort();
-			boolean alreadyExists = false;
-			for (BrokerReceptionOutboundPort port : brops) {
-				if (port.getServerPortURI() != null && port.getServerPortURI().equals(inboundPortURI))
-					alreadyExists = true;
+			// si le topic n'existe pas, on l'ajoute
+			if (!topics.containsKey(topic))
+				topics.put(topic, new Topic());
+			// on ajoute le subscriber au topic
+			topics.get(topic).addSubscription(inboundPortURI, null);
+
+			// on créer un port sortant et le lie a celui du subscriber
+			try {
+				BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
+				brop.publishPort();
+				boolean alreadyExists = false;
+				for (BrokerReceptionOutboundPort port : brops) {
+					if (port.getServerPortURI() != null && port.getServerPortURI().equals(inboundPortURI))
+						alreadyExists = true;
+				}
+				if (!alreadyExists)
+					brops.add(brop);
+				this.doPortConnection(brop.getPortURI(), inboundPortURI, ReceptionConnector.class.getCanonicalName());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (!alreadyExists)
-				brops.add(brop);
-			this.doPortConnection(brop.getPortURI(), inboundPortURI, ReceptionConnector.class.getCanonicalName());
-		} catch (Exception e) {
-			e.printStackTrace();
+		} finally {
+			this.lock.writeLock().unlock();
 		}
-		this.lock.writeLock().unlock();
 	}
 
 	@Override
@@ -294,30 +318,44 @@ public class Broker extends AbstractComponent
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		// on recupère le topic
+		Topic t;
 		this.lock.readLock().lock();
-		Topic t = topics.get(topic);
-		this.lock.readLock().unlock();
+		try {
+			t = topics.get(topic);
+		} finally {
+			this.lock.readLock().unlock();
+		}
 
 		// si le topic existe, on change le filtre
 		if (t != null) {
 			this.lock.writeLock().lock();
-			t.updateFilter(inboundPortURI, newFilter);
-			this.lock.writeLock().unlock();
+			try {
+				t.updateFilter(inboundPortURI, newFilter);
+			} finally {
+				this.lock.writeLock().unlock();
+			}
 		}
 	}
 
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
+		Topic t;
 		// on récupère le topic
 		this.lock.readLock().lock();
-		Topic t = topics.get(topic);
-		this.lock.readLock().unlock();
+		try {
+			t = topics.get(topic);
+		} finally {
+			this.lock.readLock().unlock();
+		}
 
 		if (t != null) {
 			// on enlève le subscriber du topic
 			this.lock.writeLock().lock();
-			t.removeSubscriber(inboundPortURI);
-			this.lock.writeLock().unlock();
+			try {
+				t.removeSubscriber(inboundPortURI);
+			} finally {
+				this.lock.writeLock().unlock();
+			}
 
 			// on supprime le port lié au client
 			brops.removeIf(brop -> {

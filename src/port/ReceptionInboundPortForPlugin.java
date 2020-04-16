@@ -33,6 +33,7 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 			this.getOwner().runTask(AbstractComponent.STANDARD_REQUEST_HANDLER_URI, owner -> {
 				try {
 					((ReceptionImplementationI) owner).acceptMessage(m);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

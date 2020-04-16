@@ -1,0 +1,9 @@
+fr.sorbonne_u.cps.map.components
+fr.sorbonne_u.cps.map.connectors
+fr.sorbonne_u.cps.map.deployments
+fr.sorbonne_u.cps.map.interfaces
+fr.sorbonne_u.cps.map.ports
+fr.sorbonne_u.cps.map.withplugin
+fr.sorbonne_u.cps.map.withplugin.components
+fr.sorbonne_u.cps.map.withplugin.plugins
+fr.sorbonne_u.cps.map.withplugin.ports
