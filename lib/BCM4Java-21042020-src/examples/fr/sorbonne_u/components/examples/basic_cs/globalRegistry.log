@@ -1,0 +1,20 @@
+1587553624315|Registry up and running!
+1587553626201|GlobalRegistry processing put my-URI-provider rmi=localhost
+1587553626272|GlobalRegistry processing put iport rmi=localhost
+1587553626458|All connected!
+1587553626459|GlobalRegistry processing put my-URI-consumer rmi=localhost
+1587553626878|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionI-9cebd808-0c58-493a-b3b6-ef39e54da4a0 rmi=localhost
+1587553626978|GlobalRegistry processing put provider-dcc rmi=localhost
+1587553627002|GlobalRegistry processing put fr.sorbonne_u.components.reflection.interfaces.ReflectionI-bcadca6e-e24f-4484-bbef-f890e17f2c0b rmi=localhost
+1587553627126|GlobalRegistry processing put consumer-dcc rmi=localhost
+1587553627222|GlobalRegistry processing lookup iport
+1587553642531|GlobalRegistry processing remove my-URI-provider
+1587553642531|GlobalRegistry processing remove fr.sorbonne_u.components.reflection.interfaces.ReflectionI-bcadca6e-e24f-4484-bbef-f890e17f2c0b
+1587553642575|GlobalRegistry processing remove fr.sorbonne_u.components.reflection.interfaces.ReflectionI-9cebd808-0c58-493a-b3b6-ef39e54da4a0
+1587553642582|GlobalRegistry processing remove my-URI-consumer
+1587553642735|GlobalRegistry processing remove consumer-dcc
+1587553642739|GlobalRegistry processing remove iport
+1587553642792|GlobalRegistry processing remove provider-dcc
+1587553642931|GlobalRegistry processing shutdown
+1587553642937|GlobalRegistry processing shutdown
+1587553642949|Global registry shuts down!

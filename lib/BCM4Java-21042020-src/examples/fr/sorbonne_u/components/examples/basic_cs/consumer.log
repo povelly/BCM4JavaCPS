@@ -1,0 +1,22 @@
+1587553627330|starting consumer component.
+1587553628353|consumer getting a new URI no 1: my-URI-provider-90812c0f-aa7d-436a-a34d-c474273fc80c.
+1587553628372|consumer getting a new set of URIs no 1 [my-URI-provider-522892a7-e11c-41f8-a40b-a82e655e0d9f, my-URI-provider-1f5eec24-7408-41a1-a9b3-2dc01fb807d8].
+1587553629378|consumer getting a new URI no 2: my-URI-provider-1098711d-5dd5-4db2-bf65-bfc0a8d50d84.
+1587553629392|consumer getting a new set of URIs no 2 [my-URI-provider-18789279-a923-4d8d-a7c2-02ce0d15414a, my-URI-provider-524100d5-934b-4f56-a90f-06c3a10c3fe5].
+1587553630401|consumer getting a new URI no 3: my-URI-provider-3612d025-704b-4f6f-b80f-4ef119ab471c.
+1587553630408|consumer getting a new set of URIs no 3 [my-URI-provider-7d1f682a-5a5a-4dd0-8e55-35f1e05c6d83, my-URI-provider-aa525707-5349-4b15-9a05-688cd9120414].
+1587553631425|consumer getting a new URI no 4: my-URI-provider-449c6680-3c20-4711-9e7d-161287dc7d9a.
+1587553631432|consumer getting a new set of URIs no 4 [my-URI-provider-03676943-a500-4aba-b42b-bef74dc25317, my-URI-provider-63484d6c-a728-4101-9b02-17baf470f0fd].
+1587553632441|consumer getting a new URI no 5: my-URI-provider-3ac4547d-85ad-43b3-8322-241a51385d94.
+1587553632448|consumer getting a new set of URIs no 5 [my-URI-provider-91b911f8-85aa-4bbb-a3a7-cc229c796a40, my-URI-provider-faae0d73-8694-4806-a17b-5ed62f336594].
+1587553633459|consumer getting a new URI no 6: my-URI-provider-f8594e3d-0964-4148-815d-cba76ce893f4.
+1587553633466|consumer getting a new set of URIs no 6 [my-URI-provider-ea26545c-4a8f-4529-b843-27952d9c7315, my-URI-provider-d7e312f7-ab26-4756-b829-aa9a6c2a4323].
+1587553634478|consumer getting a new URI no 7: my-URI-provider-071a9b66-8966-4655-836a-7f46105353be.
+1587553634485|consumer getting a new set of URIs no 7 [my-URI-provider-5a4bdecf-5b2b-4985-885c-8188d5394a29, my-URI-provider-c9200acb-f074-4af3-8538-ad4cb33d783f].
+1587553635493|consumer getting a new URI no 8: my-URI-provider-82377c66-3f58-4028-bd01-7b479f755f7b.
+1587553635497|consumer getting a new set of URIs no 8 [my-URI-provider-8f98f79d-d9ee-436d-a905-fa4746322fee, my-URI-provider-28f570c2-1136-48a3-b2ad-a15db80da3b9].
+1587553636504|consumer getting a new URI no 9: my-URI-provider-d9aafbbe-b652-407b-ab3f-ce73ba5e0322.
+1587553636508|consumer getting a new set of URIs no 9 [my-URI-provider-3f1e6c5a-4b1e-401d-8a55-d00f77682f67, my-URI-provider-1f6b234e-9d23-4ac7-ac7d-8894b3c60a54].
+1587553637516|consumer getting a new URI no 10: my-URI-provider-80c64788-6d79-4acf-b8e4-81ff3f7db0fa.
+1587553637518|consumer getting a new set of URIs no 10 [my-URI-provider-33d22368-e3da-40f4-8941-5ea32da9a8bb, my-URI-provider-7967d305-9116-47d9-a145-206a1b8fed51].
+1587553642533|stopping consumer component.
