@@ -1,6 +1,5 @@
 package plugins;
 
-import connectors.ManagementConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import interfaces.ManagementCI;
@@ -26,11 +25,15 @@ public class SubscriberPlugin extends AbstractPlugin
 	private static final long serialVersionUID = 1L;
 	protected ReceptionInboundPortForPlugin rip;
 	protected String ripUri;
+
+	protected String mopUri;
 	protected ManagementOutboundPortForPlugin mop;
+
 	protected String mipUri;
 
-	public SubscriberPlugin(String mipUri, String ripUri) {
+	public SubscriberPlugin(String mopUri, String mipUri, String ripUri) {
 		super();
+		this.mopUri = mopUri;
 		this.mipUri = mipUri;
 		this.ripUri = ripUri;
 	}
@@ -57,17 +60,24 @@ public class SubscriberPlugin extends AbstractPlugin
 		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
 		this.rip.publishPort();
 		// Management
-		this.mop = new ManagementOutboundPortForPlugin(this.owner);
-		this.mop.publishPort();
+		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
+		this.mop.localPublishPort();
+
 		// Connection sur management
-		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
+//		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
+
+		this.owner.logMessage("Create rip at URI : " + rip.getPortURI());
+		this.owner.logMessage("create mop at URI : " + mop.getPortURI());
+
 		super.initialise();
 	}
 
 	@Override
 	public void finalise() throws Exception {
+		this.owner.logMessage("stop subscriber component");
+		this.owner.printExecutionLog();
 		// Deconnection sur management
-		this.owner.doPortDisconnection(mop.getPortURI());
+//		this.owner.doPortDisconnection(mop.getPortURI());
 		super.finalise();
 	}
 

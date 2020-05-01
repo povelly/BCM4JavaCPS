@@ -28,6 +28,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 
 	@Override
 	public void createTopic(String topic) {
+		System.out.println("CREATE TOPIC");
 		try {
 			this.getOwner().runTask(executorIndex, owner -> ((Broker) owner).createTopic(topic));
 		} catch (Exception e) {
@@ -55,6 +56,7 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 
 	@Override
 	public boolean isTopic(String topic) {
+		System.out.println("IS TOPIC");
 		try {
 			return this.getOwner().handleRequestSync(executorIndex, owner -> ((Broker) owner).isTopic(topic));
 		} catch (Exception e) {

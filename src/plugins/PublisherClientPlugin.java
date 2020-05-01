@@ -1,7 +1,5 @@
 package plugins;
 
-import connectors.ManagementConnector;
-import connectors.PublicationConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import interfaces.ManagementCI;
@@ -24,14 +22,20 @@ public class PublisherClientPlugin extends AbstractPlugin
 	private static final long serialVersionUID = 1L;
 
 	protected PublicationOutboundPortForPlugin pop;
+	protected String popUri;
+
 	protected ManagementOutboundPortForPlugin mop;
+	protected String mopUri;
+
 	protected String pipUri;
 	protected String mipUri;
 
-	public PublisherClientPlugin(String pipUri, String mipUri) {
+	public PublisherClientPlugin(String popUri, String mopUri, String pipUri, String mipUri) {
 		super();
 		this.pipUri = pipUri;
 		this.mipUri = mipUri;
+		this.popUri = popUri;
+		this.mopUri = mopUri;
 	}
 
 	/***********************************************************************
@@ -45,29 +49,29 @@ public class PublisherClientPlugin extends AbstractPlugin
 		super.installOn(owner);
 		// Publication
 		this.addRequiredInterface(PublicationCI.class);
-		this.pop = new PublicationOutboundPortForPlugin(this.owner);
-		this.pop.publishPort();
+		this.pop = new PublicationOutboundPortForPlugin(popUri, this.owner);
+		this.pop.localPublishPort();
 		// Management
 		this.addRequiredInterface(ManagementCI.class);
-		this.mop = new ManagementOutboundPortForPlugin(this.owner);
-		this.mop.publishPort();
+		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
+		this.mop.localPublishPort();
 	}
 
 	@Override
 	public void initialise() throws Exception {
 		// Connection sur publication
-		this.owner.doPortConnection(pop.getPortURI(), pipUri, PublicationConnector.class.getCanonicalName());
+//		this.owner.doPortConnection(pop.getPortURI(), pipUri, PublicationConnector.class.getCanonicalName());
 		// Connection sur management
-		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
+//		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
 		super.initialise();
 	}
 
 	@Override
 	public void finalise() throws Exception {
 		// Deconnection sur publication
-		this.owner.doPortDisconnection(pop.getPortURI());
+//		this.owner.doPortDisconnection(pop.getPortURI());
 		// Deconnection sur management
-		this.owner.doPortDisconnection(mop.getPortURI());
+//		this.owner.doPortDisconnection(mop.getPortURI());
 		super.finalise();
 	}
 

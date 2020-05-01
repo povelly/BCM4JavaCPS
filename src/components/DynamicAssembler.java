@@ -22,6 +22,10 @@ import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPo
 @RequiredInterfaces(required = { DynamicComponentCreationI.class })
 public class DynamicAssembler extends AbstractComponent {
 
+	protected static final String BROKER_COMPONENT_URI = "my-URI-broker";
+	protected static final String PUBLISHER_COMPONENT_URI = "my-URI-publisher";
+	protected static final String SUBSCRIBER_COMPONENT_URI = "my-URI-subscriber";
+
 	protected static final String PROVIDED_URI_PREFIX = "generated-URI-";
 
 	protected Set<String> deployerURISet;
@@ -84,22 +88,22 @@ public class DynamicAssembler extends AbstractComponent {
 		assert this.portToPublisherJVM.connected();
 		this.deployerURISet = new HashSet<String>();
 		// on va créer les composants
-		String BrokerUri = this.portToBrokerJVM.createComponent(Broker.class.getCanonicalName(),
-				new Object[] { CVM.brokerMIP_uri, CVM.brokerMIP2_uri, CVM.brokerPIP_uri });
-		deployerURISet.add(BrokerUri);
+		String brokerUri = this.portToBrokerJVM.createComponent(Broker.class.getCanonicalName(),
+				new Object[] { BROKER_COMPONENT_URI, CVM.brokerMIP_uri, CVM.brokerMIP2_uri, CVM.brokerPIP_uri });
+		deployerURISet.add(brokerUri);
 
 		String subscriberUri = this.portToSubscriberJVM.createComponent(Subscriber.class.getCanonicalName(),
-				new Object[] { CVM.brokerMIP_uri });
+				new Object[] { SUBSCRIBER_COMPONENT_URI, CVM.brokerMIP_uri });
 		deployerURISet.add(subscriberUri);
 
 		String publisherUri = this.portToPublisherJVM.createComponent(Publisher.class.getCanonicalName(),
-				new Object[] { CVM.brokerPIP_uri, CVM.brokerMIP2_uri });
+				new Object[] { PUBLISHER_COMPONENT_URI, CVM.brokerPIP_uri, CVM.brokerMIP2_uri });
 		deployerURISet.add(publisherUri);
 
 		// on appel start sur les composants
 		portToSubscriberJVM.startComponent(subscriberUri);
 		portToPublisherJVM.startComponent(publisherUri);
-		portToBrokerJVM.startComponent(BrokerUri);
+		portToBrokerJVM.startComponent(brokerUri);
 
 		// on execute les composants
 		portToSubscriberJVM.executeComponent(subscriberUri);

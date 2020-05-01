@@ -45,51 +45,58 @@ import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector
  * The class <code>CVM</code> implements the single JVM assembly for the basic
  * client/server example.
  *
- * <p><strong>Description</strong></p>
+ * <p>
+ * <strong>Description</strong>
+ * </p>
  * 
  * An URI provider component defined by the class <code>URIProvider</code>
  * offers an URI creation service, which is used by an URI consumer component
  * defined by the class <code>URIConsumer</code>. Both are deployed within a
  * single JVM.
  * 
- * <p><strong>Invariant</strong></p>
+ * <p>
+ * <strong>Invariant</strong>
+ * </p>
  * 
  * <pre>
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2014-01-22</p>
+ * <p>
+ * Created on : 2014-01-22
+ * </p>
  * 
- * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+ * @author <a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			CVM
-extends		AbstractCVM
-{
-	/** URI of the provider component (convenience).						*/
-	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider" ;
-	/** URI of the consumer component (convenience).						*/
-	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer" ;
-	/** URI of the provider outbound port (simplifies the connection).	*/
-	protected static final String	URIGetterOutboundPortURI = "oport" ;
-	/** URI of the consumer inbound port (simplifies the connection).		*/
-	protected static final String	URIProviderInboundPortURI = "iport" ;
+public class CVM extends AbstractCVM {
+	/** URI of the provider component (convenience). */
+	protected static final String PROVIDER_COMPONENT_URI = "my-URI-provider";
+	/** URI of the consumer component (convenience). */
+	protected static final String CONSUMER_COMPONENT_URI = "my-URI-consumer";
+	/** URI of the provider outbound port (simplifies the connection). */
+	protected static final String URIGetterOutboundPortURI = "oport";
+	/** URI of the consumer inbound port (simplifies the connection). */
+	protected static final String URIProviderInboundPortURI = "iport";
 
-	public				CVM() throws Exception
-	{
-		super() ;
+	public CVM() throws Exception {
+		super();
 	}
 
-	/** Reference to the provider component to share between deploy
-	 *  and shutdown.													*/
-	protected String	uriProviderURI ;
-	/** Reference to the consumer component to share between deploy
-	 *  and shutdown.													*/
-	protected String	uriConsumerURI ;
+	/**
+	 * Reference to the provider component to share between deploy and shutdown.
+	 */
+	protected String uriProviderURI;
+	/**
+	 * Reference to the consumer component to share between deploy and shutdown.
+	 */
+	protected String uriConsumerURI;
 
 	/**
 	 * instantiate the components, publish their port and interconnect them.
 	 * 
-	 * <p><strong>Contract</strong></p>
+	 * <p>
+	 * <strong>Contract</strong>
+	 * </p>
 	 * 
 	 * <pre>
 	 * pre	!this.deploymentDone()
@@ -99,9 +106,8 @@ extends		AbstractCVM
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
 	 */
 	@Override
-	public void			deploy() throws Exception
-	{
-		assert	!this.deploymentDone() ;
+	public void deploy() throws Exception {
+		assert !this.deploymentDone();
 
 		// --------------------------------------------------------------------
 		// Configuration phase
@@ -118,39 +124,30 @@ extends		AbstractCVM
 		// --------------------------------------------------------------------
 
 		// create the provider component
-		this.uriProviderURI =
-			AbstractComponent.createComponent(
-					URIProvider.class.getCanonicalName(),
-					new Object[]{PROVIDER_COMPONENT_URI,
-								 URIProviderInboundPortURI}) ;
-		assert	this.isDeployedComponent(this.uriProviderURI) ;
+		this.uriProviderURI = AbstractComponent.createComponent(URIProvider.class.getCanonicalName(),
+				new Object[] { PROVIDER_COMPONENT_URI, URIProviderInboundPortURI });
+		assert this.isDeployedComponent(this.uriProviderURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.toggleTracing(this.uriProviderURI) ;
-		this.toggleLogging(this.uriProviderURI) ;
+		this.toggleTracing(this.uriProviderURI);
+		this.toggleLogging(this.uriProviderURI);
 
 		// create the consumer component
-		this.uriConsumerURI =
-			AbstractComponent.createComponent(
-					URIConsumer.class.getCanonicalName(),
-					new Object[]{CONSUMER_COMPONENT_URI,
-								 URIGetterOutboundPortURI}) ;
-		assert	this.isDeployedComponent(this.uriConsumerURI) ;
+		this.uriConsumerURI = AbstractComponent.createComponent(URIConsumer.class.getCanonicalName(),
+				new Object[] { CONSUMER_COMPONENT_URI, URIGetterOutboundPortURI });
+		assert this.isDeployedComponent(this.uriConsumerURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.toggleTracing(this.uriConsumerURI) ;
-		this.toggleLogging(this.uriConsumerURI) ;
-		
+		this.toggleTracing(this.uriConsumerURI);
+		this.toggleLogging(this.uriConsumerURI);
+
 		// --------------------------------------------------------------------
 		// Connection phase
 		// --------------------------------------------------------------------
 
 		// do the connection
-		this.doPortConnection(
-				this.uriConsumerURI,
-				URIGetterOutboundPortURI,
-				URIProviderInboundPortURI,
-				URIServiceConnector.class.getCanonicalName()) ;
+		this.doPortConnection(this.uriConsumerURI, URIGetterOutboundPortURI, URIProviderInboundPortURI,
+				URIServiceConnector.class.getCanonicalName());
 		// Nota: the above use of the reference to the object representing
 		// the URI consumer component is allowed only in the deployment
 		// phase of the component virtual machine (to perform the static
@@ -166,20 +163,17 @@ extends		AbstractCVM
 		// --------------------------------------------------------------------
 
 		super.deploy();
-		assert	this.deploymentDone() ;
+		assert this.deploymentDone();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#finalise()
 	 */
 	@Override
-	public void				finalise() throws Exception
-	{
+	public void finalise() throws Exception {
 		// Port disconnections can be done here for static architectures
 		// otherwise, they can be done in the finalise methods of components.
-		this.doPortDisconnection(
-				this.uriConsumerURI,
-				URIGetterOutboundPortURI) ;
+		this.doPortDisconnection(this.uriConsumerURI, URIGetterOutboundPortURI);
 
 		super.finalise();
 	}
@@ -187,7 +181,9 @@ extends		AbstractCVM
 	/**
 	 * disconnect the components and then call the base shutdown method.
 	 * 
-	 * <p><strong>Contract</strong></p>
+	 * <p>
+	 * <strong>Contract</strong>
+	 * </p>
 	 * 
 	 * <pre>
 	 * pre	true				// no more preconditions.
@@ -197,26 +193,24 @@ extends		AbstractCVM
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#shutdown()
 	 */
 	@Override
-	public void				shutdown() throws Exception
-	{
-		assert	this.allFinalised() ;
+	public void shutdown() throws Exception {
+		assert this.allFinalised();
 		// any disconnection not done yet can be performed here
 
 		super.shutdown();
 	}
 
-	public static void		main(String[] args)
-	{
+	public static void main(String[] args) {
 		try {
 			// Create an instance of the defined component virtual machine.
-			CVM a = new CVM() ;
+			CVM a = new CVM();
 			// Execute the application.
-			a.startStandardLifeCycle(20000L) ;
+			a.startStandardLifeCycle(20000L);
 			// Give some time to see the traces (convenience).
-			Thread.sleep(5000L) ;
+			Thread.sleep(5000L);
 			// Simplifies the termination (termination has yet to be treated
 			// properly in BCM).
-			System.exit(0) ;
+			System.exit(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

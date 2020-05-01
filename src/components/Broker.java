@@ -52,8 +52,12 @@ public class Broker extends AbstractComponent
 	// Map<identifiant du topic, Topic>
 	protected Map<String, Topic> topics = new HashMap<>();
 
-	protected Broker(String bmipURI, String bmip2URI, String bpipURI) throws Exception {
-		super(1, 0);
+	protected Broker(String uri, String bmipURI, String bmip2URI, String bpipURI) throws Exception {
+		super(uri, 1, 0);
+
+		this.tracer.setTitle(uri);
+		this.tracer.setRelativePosition(1, 1);
+
 		// Verifications
 		assert bmipURI != null;
 		assert bmip2URI != null;
@@ -90,8 +94,8 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
-			for (BrokerReceptionOutboundPort brop : brops)
-				this.doPortDisconnection(brop.getPortURI());
+//			for (BrokerReceptionOutboundPort brop : brops)
+//				this.doPortDisconnection(brop.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -101,8 +105,8 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		try {
-			for (BrokerReceptionOutboundPort brop : brops)
-				this.doPortDisconnection(brop.getPortURI());
+//			for (BrokerReceptionOutboundPort brop : brops)
+//				this.doPortDisconnection(brop.getPortURI());
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -128,6 +132,8 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void createTopic(String topic) {
+		System.out.println("create topic");
+		System.out.println("try create topic " + topic);
 		this.lock.writeLock().lock();
 		try {
 			if (!isTopic(topic))
