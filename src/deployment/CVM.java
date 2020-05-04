@@ -30,14 +30,6 @@ public class CVM extends AbstractCVM {
 
 	@Override
 	public void deploy() throws Exception {
-		// fonctionnent mais génèrent des erreurs
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PUBLIHSING);
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.COMPONENT_DEPLOYMENT);
-
-		// n'ont pas l'air de marcher
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING); // log la connexion des ports et des connecteurs
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING); // log la transmission des appels dans les connecteurs et les ports
-
 		// on créer le DynamicAssembler
 		@SuppressWarnings("unused")
 		String da = AbstractComponent.createComponent(DynamicAssembler.class.getCanonicalName(),

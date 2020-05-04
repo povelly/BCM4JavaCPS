@@ -11,4 +11,15 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  */
 public interface PublicationCI extends PublicationsImplementationI, OfferedI, RequiredI {
 
+	@Override
+	void publish(MessageI m, String topic) throws Exception;
+
+	@Override
+	void publish(MessageI m, String[] topics) throws Exception;
+
+	@Override
+	void publish(MessageI[] ms, String topic) throws Exception;
+
+	@Override
+	void publish(MessageI[] ms, String[] topics) throws Exception;
 }

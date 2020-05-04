@@ -1,5 +1,7 @@
 package plugins;
 
+import connectors.ManagementConnector;
+import connectors.PublicationConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import interfaces.ManagementCI;
@@ -60,18 +62,18 @@ public class PublisherClientPlugin extends AbstractPlugin
 	@Override
 	public void initialise() throws Exception {
 		// Connection sur publication
-//		this.owner.doPortConnection(pop.getPortURI(), pipUri, PublicationConnector.class.getCanonicalName());
+		this.owner.doPortConnection(pop.getPortURI(), pipUri, PublicationConnector.class.getCanonicalName());
 		// Connection sur management
-//		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
+		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
 		super.initialise();
 	}
 
 	@Override
 	public void finalise() throws Exception {
 		// Deconnection sur publication
-//		this.owner.doPortDisconnection(pop.getPortURI());
+		this.owner.doPortDisconnection(pop.getPortURI());
 		// Deconnection sur management
-//		this.owner.doPortDisconnection(mop.getPortURI());
+		this.owner.doPortDisconnection(mop.getPortURI());
 		super.finalise();
 	}
 

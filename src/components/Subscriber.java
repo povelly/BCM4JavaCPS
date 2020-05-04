@@ -5,6 +5,7 @@ import fr.sorbonne_u.components.AbstractPort;
 import interfaces.MessageI;
 import interfaces.ReceptionImplementationI;
 import plugins.SubscriberPlugin;
+import utils.Log;
 
 /**
  * Classe representant le composant souscriveur
@@ -20,10 +21,10 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 
 	// TODO verif les histoires d'uris, surtout ripUri
 	protected Subscriber(String uri, String mopUri, String mipServerUri) throws Exception {
-		super(uri, 4, 0);
+		super(uri, 4, 1);
 
 		this.tracer.setTitle(uri);
-		this.tracer.setRelativePosition(1, 1);
+		this.tracer.setRelativePosition(0, 2);
 
 		// verifications
 		assert mipServerUri != null;
@@ -44,41 +45,44 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	@Override
 	public void execute() throws Exception {
 		super.execute();
-		System.out.println("subscriber mop connecter : " + findPortFromURI("subscribermopbla").isRemotelyConnected());
-		System.out.println("server port uri : " + findPortFromURI("subscribermopbla").getServerPortURI());
-		System.out.println("Test des méthodes de ManagementImplementationI :\n");
 		// test des méthodes de création de topics + isTopic
-		System.out.println("Test createTopic(\"topic1\") + isTopic");
-//		subscriberPlugin.createTopic("topic1");
-		System.out.println("topic 1 créer : " + subscriberPlugin.isTopic("topic1"));
-//
-//		System.out.println("Test createTopic({\"topic2\", \"topic3\"}) + isTopic");
-//		subscriberPlugin.createTopics(new String[] { "topic2", "topic3" });
-//		System.out.println("topic 2 et 3 créer : " + subscriberPlugin.isTopic("topic2") + " / "
-//				+ subscriberPlugin.isTopic("topic3"));
-//
-//		// test getTopics
-//		String[] topics = subscriberPlugin.getTopics();
-//		System.out.println("\ntest getTopics");
-//		for (String s : topics)
-//			System.out.println(s);
-//		System.out.println("Si ok, ce sont affichés topic1, topic2 et topic3");
-//
-//		// test destroyTopic
-//		System.out.println("\ntest destroyTopic(\"topic1\")");
-//		subscriberPlugin.destroyTopic("topic1");
-//		Thread.sleep(500);
-//		System.out.println("topic1 existe encore :" + subscriberPlugin.isTopic("topic1"));
-//
-//		// tests des méthodes de subscription :
-//		System.out.println(
-//				"\n\nrecreation de topic1 puis test des méthodes des méthodes de PublicationCI, ReceptionCI, et SubscriptionImplementationI :");
-//
-//		// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
-//		subscriberPlugin.subscribe("topic1", m -> (false), ripUri);
-//		subscriberPlugin.subscribe(new String[] { "topic2", "topic3" }, ripUri);
-//		subscriberPlugin.subscribe("topic4", ripUri);
-//		subscriberPlugin.unsubscribe("topic4", ripUri);
+		this.runTask(component -> {
+			try {
+				Log.printAndLog(this, "Test createTopic(\"topic1\") + isTopic");
+				subscriberPlugin.createTopic("topic1");
+				Log.printAndLog(this, "topic 1 créer : " + subscriberPlugin.isTopic("topic1"));
+
+				Log.printAndLog(this, "Test createTopic({\"topic2\", \"topic3\"}) + isTopic");
+				subscriberPlugin.createTopics(new String[] { "topic2", "topic3" });
+				Log.printAndLog(this, "topic 2 et 3 créer : " + subscriberPlugin.isTopic("topic2") + " / "
+						+ subscriberPlugin.isTopic("topic3"));
+
+				// test getTopics
+				String[] topics = subscriberPlugin.getTopics();
+				Log.printAndLog(this, "\ntest getTopics");
+				for (String s : topics)
+					Log.printAndLog(this, s);
+				Log.printAndLog(this, "Si ok, ce sont affichés topic1, topic2 et topic3");
+
+				// test destroyTopic
+				Log.printAndLog(this, "\ntest destroyTopic(\"topic1\")");
+				subscriberPlugin.destroyTopic("topic1");
+				Thread.sleep(500);
+				Log.printAndLog(this, "topic1 existe encore :" + subscriberPlugin.isTopic("topic1"));
+
+				// tests des méthodes de subscription :
+				Log.printAndLog(this,
+						"\n\nrecreation de topic1 puis test des méthodes des méthodes de PublicationCI, ReceptionCI, et SubscriptionImplementationI :");
+
+				// souscrit a un topic du broker en passant son port pour pouvoir etre contacté
+				subscriberPlugin.subscribe("topic1", m -> (false), ripUri);
+				subscriberPlugin.subscribe(new String[] { "topic2", "topic3" }, ripUri);
+				subscriberPlugin.subscribe("topic4", ripUri);
+				subscriberPlugin.unsubscribe("topic4", ripUri);
+			} catch (Exception e) {
+				Log.printAndLog(this, e.getMessage());
+			}
+		});
 	}
 
 	/***********************************************************************
@@ -90,8 +94,8 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
-			System.out.println("Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : " + this.ripUri
-					+ "; message : " + m.getPayload());
+			Log.printAndLog(this, "Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
+					+ this.ripUri + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -101,7 +105,7 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	public void acceptMessage(MessageI[] ms) {
 		try {
 			for (MessageI m : ms)
-				System.out.println("Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
+				Log.printAndLog(this, "Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
 						+ this.ripUri + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();

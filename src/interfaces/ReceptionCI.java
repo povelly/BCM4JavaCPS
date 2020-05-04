@@ -11,4 +11,9 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  */
 public interface ReceptionCI extends ReceptionImplementationI, OfferedI, RequiredI {
 
+	@Override
+	void acceptMessage(MessageI m) throws Exception;
+
+	@Override
+	void acceptMessage(MessageI[] ms) throws Exception;
 }

@@ -1,5 +1,7 @@
 package interfaces;
 
+import java.io.Serializable;
+
 /**
  * 
  * interface fonctionelle permettant de filter un message
@@ -8,13 +10,13 @@ package interfaces;
  *
  */
 @FunctionalInterface
-public interface MessageFilterI {
+public interface MessageFilterI extends Serializable {
 
 	/**
 	 * 
 	 * @param m Message à filtrer
 	 * @return true si le message correspond au conditions, false sinon
 	 */
-	public boolean filter(MessageI m);
+	boolean filter(MessageI m);
 
 }

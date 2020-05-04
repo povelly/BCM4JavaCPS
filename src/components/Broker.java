@@ -11,7 +11,6 @@ import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.ManagementCI;
 import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
@@ -24,6 +23,7 @@ import message.Topic;
 import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
 import port.BrokerReceptionOutboundPort;
+import utils.Log;
 
 /**
  * Classe representant le composant courtier
@@ -56,7 +56,7 @@ public class Broker extends AbstractComponent
 		super(uri, 1, 0);
 
 		this.tracer.setTitle(uri);
-		this.tracer.setRelativePosition(1, 1);
+		this.tracer.setRelativePosition(0, 4);
 
 		// Verifications
 		assert bmipURI != null;
@@ -91,30 +91,34 @@ public class Broker extends AbstractComponent
 	 * 
 	 ***********************************************************************/
 
-	@Override
-	public void shutdown() throws ComponentShutdownException {
-		try {
+//	@Override
+//	public void shutdown() throws ComponentShutdownException {
+//		Log.printAndLog(this, "shutdowwwwnn");
+//		try {
 //			for (BrokerReceptionOutboundPort brop : brops)
 //				this.doPortDisconnection(brop.getPortURI());
-		} catch (Exception e) {
-			throw new ComponentShutdownException(e);
-		}
+//		} catch (Exception e) {
+//			throw new ComponentShutdownException(e);
+//		}
 //		super.shutdown();
-	}
-
-	@Override
-	public void shutdownNow() throws ComponentShutdownException {
-		try {
+//	}
+//
+//	@Override
+//	public void shutdownNow() throws ComponentShutdownException {
+//		try {
 //			for (BrokerReceptionOutboundPort brop : brops)
 //				this.doPortDisconnection(brop.getPortURI());
-		} catch (Exception e) {
-			throw new ComponentShutdownException(e);
-		}
-		super.shutdownNow();
-	}
+//		} catch (Exception e) {
+//			throw new ComponentShutdownException(e);
+//		}
+//		super.shutdownNow();
+//	}
 
 	@Override
 	public void finalise() throws Exception {
+		Log.printAndLog(this, "finalizzz");
+		for (BrokerReceptionOutboundPort brop : brops)
+			this.doPortDisconnection(brop.getPortURI());
 		// on dépublie les ports
 		for (BrokerReceptionOutboundPort brop : brops)
 			brop.unpublishPort();
@@ -132,8 +136,6 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void createTopic(String topic) {
-		System.out.println("create topic");
-		System.out.println("try create topic " + topic);
 		this.lock.writeLock().lock();
 		try {
 			if (!isTopic(topic))
@@ -198,7 +200,7 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
-		System.out.println("broker reçoit, thread : " + Thread.currentThread().getId());
+		Log.printAndLog(this, "broker reçoit, thread : " + Thread.currentThread().getId());
 		// on créer les topic si nécéssaire
 		for (String topic : topics)
 			this.createTopic(topic);
@@ -237,7 +239,7 @@ public class Broker extends AbstractComponent
 										// on envoie le message
 										this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
 											try {
-												System.out.println(
+												Log.printAndLog(this,
 														"broker envoie, thread : " + Thread.currentThread().getId());
 												brop.acceptMessage(m);
 											} catch (Exception e) {
@@ -292,7 +294,7 @@ public class Broker extends AbstractComponent
 			// on créer un port sortant et le lie a celui du subscriber
 			try {
 				BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
-				brop.publishPort();
+				brop.localPublishPort();
 				boolean alreadyExists = false;
 				for (BrokerReceptionOutboundPort port : brops) {
 					if (port.getServerPortURI() != null && port.getServerPortURI().equals(inboundPortURI))

@@ -13,12 +13,12 @@ import message.TimeStamp;
  */
 public interface MessageI extends Serializable {
 
-	public String getURI();
+	String getURI() throws Exception;
 
-	public TimeStamp getTimeStamp();
+	TimeStamp getTimeStamp() throws Exception;
 
-	public Properties getProperties();
+	Properties getProperties() throws Exception;
 
-	public Serializable getPayload();
+	Serializable getPayload() throws Exception;
 
 }

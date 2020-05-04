@@ -28,7 +28,6 @@ public class ManagementConnector extends AbstractConnector implements Management
 
 	@Override
 	public boolean isTopic(String topic) throws Exception {
-		System.out.println("is offering port remote : " + this.isOfferringPortRemote() + " , eq : " + this.offering);
 		return ((ManagementCI) this.offering).isTopic(topic);
 	}
 

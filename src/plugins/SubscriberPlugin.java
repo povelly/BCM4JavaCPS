@@ -1,5 +1,6 @@
 package plugins;
 
+import connectors.ManagementConnector;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import interfaces.ManagementCI;
@@ -64,20 +65,16 @@ public class SubscriberPlugin extends AbstractPlugin
 		this.mop.localPublishPort();
 
 		// Connection sur management
-//		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
-
-		this.owner.logMessage("Create rip at URI : " + rip.getPortURI());
-		this.owner.logMessage("create mop at URI : " + mop.getPortURI());
+		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
 
 		super.initialise();
 	}
 
 	@Override
 	public void finalise() throws Exception {
-		this.owner.logMessage("stop subscriber component");
 		this.owner.printExecutionLog();
 		// Deconnection sur management
-//		this.owner.doPortDisconnection(mop.getPortURI());
+		this.owner.doPortDisconnection(mop.getPortURI());
 		super.finalise();
 	}
 

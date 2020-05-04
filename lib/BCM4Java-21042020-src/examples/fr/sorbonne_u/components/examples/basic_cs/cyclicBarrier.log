@@ -1,45 +1,45 @@
-1587553624314|DCVM Cyclic Barrier up and running!
-1587553625842|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553625845|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553625954|All connected!
-1587553625955|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553625956|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553625956|DCVM Cyclic Barrier releases 2 sites.
-1587553625997|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553625998|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553626014|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553626016|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553626016|DCVM Cyclic Barrier releases 2 sites.
-1587553627022|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553627024|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553627170|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553627171|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553627171|DCVM Cyclic Barrier releases 2 sites.
-1587553627177|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553627180|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553627326|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553627327|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553627327|DCVM Cyclic Barrier releases 2 sites.
-1587553627378|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553627379|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553627390|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553627392|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553627392|DCVM Cyclic Barrier releases 2 sites.
-1587553642479|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553642479|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553642482|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553642484|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553642484|DCVM Cyclic Barrier releases 2 sites.
-1587553642663|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553642666|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553642671|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553642674|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553642674|DCVM Cyclic Barrier releases 2 sites.
-1587553642782|DCVM Cyclic Barrier accepts: consumer localhost 60846
-1587553642783|DCVM Cyclic Barrier has received 1 out of 2 expected.
-1587553642879|DCVM Cyclic Barrier accepts: provider localhost 60848
-1587553642882|DCVM Cyclic Barrier has received 2 out of 2 expected.
-1587553642882|DCVM Cyclic Barrier releases 2 sites.
-1587553642888|DCVMCyclicBarrier.run() finished.
-1587553642889|DCVMCyclicBarrier.run() finished.
-1587553642889|DCVM Cyclic Barrier shuts down!
+1588342579924|DCVM Cyclic Barrier up and running!
+1588342582454|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342582457|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342584818|All connected!
+1588342584819|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342584823|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342584823|DCVM Cyclic Barrier releases 2 sites.
+1588342584830|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342584833|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342584905|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342584906|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342584906|DCVM Cyclic Barrier releases 2 sites.
+1588342585737|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342585738|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342585993|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342585994|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342585994|DCVM Cyclic Barrier releases 2 sites.
+1588342585996|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342585997|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342586121|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342586122|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342586122|DCVM Cyclic Barrier releases 2 sites.
+1588342586173|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342586174|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342586181|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342586183|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342586183|DCVM Cyclic Barrier releases 2 sites.
+1588342601273|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342601273|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342601274|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342601276|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342601276|DCVM Cyclic Barrier releases 2 sites.
+1588342601457|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342601458|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342601461|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342601461|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342601461|DCVM Cyclic Barrier releases 2 sites.
+1588342601549|DCVM Cyclic Barrier accepts: consumer localhost 43536
+1588342601550|DCVM Cyclic Barrier has received 1 out of 2 expected.
+1588342601637|DCVM Cyclic Barrier accepts: provider localhost 43534
+1588342601638|DCVM Cyclic Barrier has received 2 out of 2 expected.
+1588342601638|DCVM Cyclic Barrier releases 2 sites.
+1588342601640|DCVMCyclicBarrier.run() finished.
+1588342601640|DCVMCyclicBarrier.run() finished.
+1588342601641|DCVM Cyclic Barrier shuts down!

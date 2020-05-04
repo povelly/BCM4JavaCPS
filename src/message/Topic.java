@@ -1,5 +1,6 @@
 package message;
 
+import java.io.Serializable;
 /**
  * Classe representant un Topic, il contient la liste de touts ses messages
  * ainsi qu'un ensemble avec ses abonnés et pour chaques abonné son filtre
@@ -16,7 +17,9 @@ import java.util.Set;
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
 
-public class Topic {
+public class Topic implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	// Tout les messages du topics
 	private List<MessageI> messages;

@@ -1,19 +1,19 @@
 package interfaces;
 
 /**
- * interface de publication
+ * interface de ation
  * 
  * @author Bello Velly
  *
  */
 public interface PublicationsImplementationI {
 
-	public void publish(MessageI m, String topic) throws Exception;
+	void publish(MessageI m, String topic) throws Exception;
 
-	public void publish(MessageI m, String[] topics) throws Exception;
+	void publish(MessageI m, String[] topics) throws Exception;
 
-	public void publish(MessageI[] ms, String topic) throws Exception;
+	void publish(MessageI[] ms, String topic) throws Exception;
 
-	public void publish(MessageI[] ms, String[] topics) throws Exception;
+	void publish(MessageI[] ms, String[] topics) throws Exception;
 
 }

@@ -1,12 +1,16 @@
 package message;
 
+import java.io.Serializable;
+
 /**
  * Classe representant une estampille de temps
  * 
  * @author Bello Velly
  *
  */
-public class TimeStamp {
+public class TimeStamp implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	protected long time;
 	protected String timestamper;
