@@ -7,17 +7,17 @@ import interfaces.MessageI;
 import interfaces.PublicationCI;
 
 /**
- * Port d'entrée du Broker pour l'interface composant PublicationCI
+ * Port entrant l'interface composant PublicationCI
  * 
  * @author Bello Velly
  *
  */
-public class BrokerPublicationInboundPort extends AbstractInboundPort implements PublicationCI {
+public class PublicationInboundPort extends AbstractInboundPort implements PublicationCI {
 
 	private static final long serialVersionUID = 1L;
 	protected final int executorIndex;
 
-	public BrokerPublicationInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
+	public PublicationInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
 		super(uri, PublicationCI.class, owner);
 		assert owner instanceof Broker;
 		this.executorIndex = executorIndex;

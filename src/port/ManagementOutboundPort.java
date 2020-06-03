@@ -8,21 +8,21 @@ import interfaces.MessageFilterI;
 import interfaces.SubscriptionImplementationI;
 
 /**
- * Port sortant Management pour Plugin
+ * Port sortant pour l'interface ManagementCI
  * 
  * 
  * @author Bello Velly
  *
  */
-public class ManagementOutboundPortForPlugin extends AbstractOutboundPort implements ManagementCI {
+public class ManagementOutboundPort extends AbstractOutboundPort implements ManagementCI {
 
 	private static final long serialVersionUID = 1L;
 
-	public ManagementOutboundPortForPlugin(ComponentI owner) throws Exception {
+	public ManagementOutboundPort(ComponentI owner) throws Exception {
 		super(ManagementCI.class, owner);
 	}
 
-	public ManagementOutboundPortForPlugin(String uri, ComponentI owner) throws Exception {
+	public ManagementOutboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
 	}
 

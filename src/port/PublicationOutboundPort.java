@@ -7,20 +7,20 @@ import interfaces.PublicationCI;
 import interfaces.PublicationsImplementationI;
 
 /**
- * Port sortant de publication pour plugin
+ * Port sortant pour l'interface PublicationCI
  * 
  * @author Bello Velly
  *
  */
-public class PublicationOutboundPortForPlugin extends AbstractOutboundPort implements PublicationCI {
+public class PublicationOutboundPort extends AbstractOutboundPort implements PublicationCI {
 
 	private static final long serialVersionUID = 1L;
 
-	public PublicationOutboundPortForPlugin(ComponentI owner) throws Exception {
+	public PublicationOutboundPort(ComponentI owner) throws Exception {
 		super(PublicationCI.class, owner);
 	}
 
-	public PublicationOutboundPortForPlugin(String uri, ComponentI owner) throws Exception {
+	public PublicationOutboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, PublicationCI.class, owner);
 	}
 

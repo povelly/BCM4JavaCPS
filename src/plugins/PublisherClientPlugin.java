@@ -9,8 +9,8 @@ import interfaces.ManagementImplementationI;
 import interfaces.MessageI;
 import interfaces.PublicationCI;
 import interfaces.PublicationsImplementationI;
-import port.ManagementOutboundPortForPlugin;
-import port.PublicationOutboundPortForPlugin;
+import port.ManagementOutboundPort;
+import port.PublicationOutboundPort;
 
 /**
  * Plugin pour le Publisher
@@ -23,10 +23,10 @@ public class PublisherClientPlugin extends AbstractPlugin
 
 	private static final long serialVersionUID = 1L;
 
-	protected PublicationOutboundPortForPlugin pop;
+	protected PublicationOutboundPort pop;
 	protected String popUri;
 
-	protected ManagementOutboundPortForPlugin mop;
+	protected ManagementOutboundPort mop;
 	protected String mopUri;
 
 	protected String pipUri;
@@ -51,11 +51,11 @@ public class PublisherClientPlugin extends AbstractPlugin
 		super.installOn(owner);
 		// Publication
 		this.addRequiredInterface(PublicationCI.class);
-		this.pop = new PublicationOutboundPortForPlugin(popUri, this.owner);
+		this.pop = new PublicationOutboundPort(popUri, this.owner);
 		this.pop.localPublishPort();
 		// Management
 		this.addRequiredInterface(ManagementCI.class);
-		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
+		this.mop = new ManagementOutboundPort(mopUri, this.owner);
 		this.mop.localPublishPort();
 	}
 

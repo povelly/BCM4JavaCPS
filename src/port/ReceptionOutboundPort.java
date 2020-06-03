@@ -1,5 +1,6 @@
 package port;
 
+import components.Broker;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import interfaces.MessageI;
@@ -7,21 +8,23 @@ import interfaces.ReceptionCI;
 import interfaces.ReceptionImplementationI;
 
 /**
- * Port sortant de recepetion pour plugin
+ * Port sortant pour l'interface ReceptionCI
  * 
  * @author Bello Velly
  *
  */
-public class ReceptionOutboundPortForPlugin extends AbstractOutboundPort implements ReceptionCI {
+public class ReceptionOutboundPort extends AbstractOutboundPort implements ReceptionCI {
 
 	private static final long serialVersionUID = 1L;
 
-	public ReceptionOutboundPortForPlugin(ComponentI owner) throws Exception {
+	public ReceptionOutboundPort(ComponentI owner) throws Exception {
 		super(ReceptionCI.class, owner);
+		assert owner instanceof Broker;
 	}
 
-	public ReceptionOutboundPortForPlugin(String uri, ComponentI owner) throws Exception {
+	public ReceptionOutboundPort(String uri, ComponentI owner) throws Exception {
 		super(uri, ReceptionCI.class, owner);
+		assert owner instanceof Broker;
 	}
 
 	@Override
