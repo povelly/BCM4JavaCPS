@@ -93,11 +93,12 @@ public class DynamicAssembler extends AbstractComponent {
 		deployerURISet.add(brokerUri);
 
 		String subscriberUri = this.portToSubscriberJVM.createComponent(Subscriber.class.getCanonicalName(),
-				new Object[] { SUBSCRIBER_COMPONENT_URI, CVM.brokerMIP_uri });
+				new Object[] { SUBSCRIBER_COMPONENT_URI, CVM.subscriberMOP_uri, CVM.brokerMIP_uri });
 		deployerURISet.add(subscriberUri);
 
 		String publisherUri = this.portToPublisherJVM.createComponent(Publisher.class.getCanonicalName(),
-				new Object[] { PUBLISHER_COMPONENT_URI, CVM.brokerPIP_uri, CVM.brokerMIP2_uri });
+				new Object[] { PUBLISHER_COMPONENT_URI, CVM.publisherPOP_uri, CVM.publisherMOP_uri, CVM.brokerPIP_uri,
+						CVM.brokerMIP2_uri });
 		deployerURISet.add(publisherUri);
 
 		// on appel start sur les composants

@@ -11,6 +11,7 @@ import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
+import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import interfaces.ManagementCI;
 import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
@@ -91,41 +92,50 @@ public class Broker extends AbstractComponent
 	 * 
 	 ***********************************************************************/
 
-//	@Override
-//	public void shutdown() throws ComponentShutdownException {
-//		Log.printAndLog(this, "shutdowwwwnn");
-//		try {
-//			for (BrokerReceptionOutboundPort brop : brops)
-//				this.doPortDisconnection(brop.getPortURI());
-//		} catch (Exception e) {
-//			throw new ComponentShutdownException(e);
-//		}
-//		super.shutdown();
-//	}
-//
-//	@Override
-//	public void shutdownNow() throws ComponentShutdownException {
-//		try {
-//			for (BrokerReceptionOutboundPort brop : brops)
-//				this.doPortDisconnection(brop.getPortURI());
-//		} catch (Exception e) {
-//			throw new ComponentShutdownException(e);
-//		}
-//		super.shutdownNow();
-//	}
-
 	@Override
 	public void finalise() throws Exception {
-		Log.printAndLog(this, "finalizzz");
 		for (BrokerReceptionOutboundPort brop : brops)
 			this.doPortDisconnection(brop.getPortURI());
-		// on dépublie les ports
-		for (BrokerReceptionOutboundPort brop : brops)
-			brop.unpublishPort();
-		bmip.unpublishPort();
-		bmip2.unpublishPort();
-		bpip.unpublishPort();
 		super.finalise();
+	}
+
+	@Override
+	public void shutdown() throws ComponentShutdownException {
+		try {
+			for (BrokerReceptionOutboundPort brop : brops) {
+				brop.unpublishPort();
+			}
+			removeRequiredInterface(ReceptionCI.class);
+			// on dépublie les ports
+			bmip.unpublishPort();
+			bmip2.unpublishPort();
+			removeOfferedInterface(ManagementCI.class);
+			bpip.unpublishPort();
+			removeOfferedInterface(PublicationCI.class);
+
+		} catch (Exception e) {
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdown();
+	}
+
+	@Override
+	public void shutdownNow() throws ComponentShutdownException {
+		try {
+			for (BrokerReceptionOutboundPort brop : brops) {
+				brop.unpublishPort();
+			}
+			removeRequiredInterface(ReceptionCI.class);
+			// on dépublie les ports
+			bmip.unpublishPort();
+			bmip2.unpublishPort();
+			removeOfferedInterface(ManagementCI.class);
+			bpip.unpublishPort();
+			removeOfferedInterface(PublicationCI.class);
+		} catch (Exception e) {
+			throw new ComponentShutdownException(e);
+		}
+		super.shutdownNow();
 	}
 
 	/***********************************************************************
@@ -294,14 +304,15 @@ public class Broker extends AbstractComponent
 			// on créer un port sortant et le lie a celui du subscriber
 			try {
 				BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
-				brop.localPublishPort();
 				boolean alreadyExists = false;
 				for (BrokerReceptionOutboundPort port : brops) {
 					if (port.getServerPortURI() != null && port.getServerPortURI().equals(inboundPortURI))
 						alreadyExists = true;
 				}
-				if (!alreadyExists)
+				if (!alreadyExists) {
+					brop.localPublishPort();
 					brops.add(brop);
+				}
 				this.doPortConnection(brop.getPortURI(), inboundPortURI, ReceptionConnector.class.getCanonicalName());
 			} catch (Exception e) {
 				e.printStackTrace();

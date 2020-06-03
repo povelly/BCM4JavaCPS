@@ -81,11 +81,9 @@ public class PublisherClientPlugin extends AbstractPlugin
 	public void uninstall() throws Exception {
 		// publication
 		this.pop.unpublishPort();
-		this.pop.destroyPort();
 		this.removeRequiredInterface(PublicationCI.class);
 		// management
 		this.mop.unpublishPort();
-		this.mop.destroyPort();
 		this.removeRequiredInterface(ManagementCI.class);
 	}
 

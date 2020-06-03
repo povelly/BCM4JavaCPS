@@ -90,11 +90,11 @@ public class DistributedCVM extends AbstractDistributedCVM {
 //		super.interconnect();
 //	}
 
-//	/**
-//	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#finalise()
-//	 */
-//	@Override
-//	public void finalise() throws Exception {
+	/**
+	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#finalise()
+	 */
+	@Override
+	public void finalise() throws Exception {
 //
 //		if (thisJVMURI.equals(BROKER_JVM_URI)) {
 //			assert this.uriBrokerURI != null && this.uriSubscriberURI == null && this.uriPublisherURI == null;
@@ -105,20 +105,23 @@ public class DistributedCVM extends AbstractDistributedCVM {
 //			this.doPortDisconnection(this.uriPublisherURI, publisherMOP_uri);
 //			this.doPortDisconnection(this.uriPublisherURI, publisherPOP_uri);
 //		}
-//
-//		super.finalise();
-//	}
+
+		super.finalise();
+	}
 
 	public static void main(String[] args) {
 		try {
 			DistributedCVM da = new DistributedCVM(args, 2, 5);
-			da.startStandardLifeCycle(15000L);
+			da.startStandardLifeCycle(10000L);
 			Thread.sleep(10000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+//		finally {
+//			System.exit(0);
+//		}
 	}
 }
 //-----------------------------------------------------------------------------

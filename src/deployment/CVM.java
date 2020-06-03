@@ -2,7 +2,6 @@ package deployment;
 
 import components.DynamicAssembler;
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 
 /**
@@ -19,10 +18,15 @@ public class CVM extends AbstractCVM {
 	protected static String SUBSCRIBER_JVM_URI = AbstractCVM.thisJVMURI;
 	protected static String BROKER_JVM_URI = AbstractCVM.thisJVMURI;
 
-	// InboundPort uris
-	public final static String brokerPIP_uri = AbstractPort.generatePortURI();
-	public final static String brokerMIP_uri = AbstractPort.generatePortURI();
-	public final static String brokerMIP2_uri = AbstractPort.generatePortURI();
+	// Uris des ports
+	public final static String brokerPIP_uri = "brokerpip";
+	public final static String brokerMIP_uri = "brokermip";
+	public final static String brokerMIP2_uri = "brokermip2";
+
+	public final static String subscriberMOP_uri = "subscribermop";
+
+	public final static String publisherPOP_uri = "publisherpop";
+	public final static String publisherMOP_uri = "publishermop";
 
 	public CVM() throws Exception {
 		super();
@@ -46,5 +50,8 @@ public class CVM extends AbstractCVM {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+//		finally {
+//			System.exit(0);
+//		}
 	}
 }
