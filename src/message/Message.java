@@ -3,6 +3,8 @@ package message;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import fr.sorbonne_u.components.AbstractPort;
 import interfaces.MessageI;
@@ -13,7 +15,7 @@ import interfaces.MessageI;
  * @author Bello Velly
  *
  */
-public class Message implements MessageI {
+public class Message implements MessageI, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +23,7 @@ public class Message implements MessageI {
 	private TimeStamp timeStamp;
 	private Properties properties;
 	private Serializable payload;
+	private List<String> brokers;
 
 	public Message(Properties properties, Serializable payload) {
 		this.URI = AbstractPort.generatePortURI();
@@ -34,6 +37,7 @@ public class Message implements MessageI {
 		}
 		this.properties = properties;
 		this.payload = payload;
+		this.brokers = new LinkedList<String>();
 	}
 
 	@Override
@@ -54,6 +58,17 @@ public class Message implements MessageI {
 	@Override
 	public Serializable getPayload() {
 		return payload;
+	}
+
+	@Override
+	public MessageI addBroker(String broker_uri) throws Exception {
+		brokers.add(broker_uri);
+		return this;
+	}
+
+	@Override
+	public Boolean containsBroker(String broker_uri) throws Exception {
+		return brokers.contains(broker_uri);
 	}
 
 }

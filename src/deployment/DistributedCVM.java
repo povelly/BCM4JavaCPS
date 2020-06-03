@@ -9,29 +9,43 @@ import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 public class DistributedCVM extends AbstractDistributedCVM {
 
 	// Uris des composants
-	protected static final String BROKER_COMPONENT_URI = "my-URI-broker";
-	protected static final String PUBLISHER_COMPONENT_URI = "my-URI-publisher";
-	protected static final String SUBSCRIBER_COMPONENT_URI = "my-URI-subscriber";
+	protected static final String BROKER_JVM1_COMPONENT_URI = "broker_jvm1";
+	protected static final String BROKER_JVM2_COMPONENT_URI = "broker_jvm2";
+
+	protected static final String PUBLISHER1_JVM1_COMPONENT_URI = "publisher1_jvm1";
+
+	protected static final String SUBSCRIBER1_JVM1_COMPONENT_URI = "subscriber1_jvm1";
+	protected static final String SUBSCRIBER1_JVM2_COMPONENT_URI = "subscriber1_jvm2";
 
 	// Uris des jvms
-	protected static String BROKER_JVM_URI = "broker";
-	protected static String PUBLISHER_JVM_URI = "publisher";
-	protected static String SUBSCRIBER_JVM_URI = "subscriber";
+	protected static String JVM1_URI = "jvm1";
+	protected static String JVM2_URI = "jvm2";
 
 	// Uris des ports
-	protected final static String brokerPIP_uri = "brokerpip";
-	protected final static String brokerMIP_uri = "brokermip";
-	protected final static String brokerMIP2_uri = "brokermip2";
+	protected final static String broker_jvm1_PIP_uri = "broker1pip";
+	protected final static String broker_jvm1_MIP_uri = "broker1mip";
+	protected final static String broker_jvm1_MIP2_uri = "broker1mip2";
+	protected final static String broker_jvm1_POP_uri = "broker1pop";
 
-	protected final static String subscriberMOP_uri = "subscribermop";
+	protected final static String broker_jvm2_PIP_uri = "broker2pip";
+	protected final static String broker_jvm2_MIP_uri = "broker2mip";
+	protected final static String broker_jvm2_MIP2_uri = "broker2mip2";
+	protected final static String broker_jvm2_POP_uri = "broker2pop";
 
-	protected final static String publisherPOP_uri = "publisherpop";
-	protected final static String publisherMOP_uri = "publishermop";
+	protected final static String subscriber1_jvm1_MOP_uri = "subscribermop";
+	protected final static String subscriber1_jvm2_MOP_uri = "subscriber2mop";
+
+	protected final static String publisher1_jvm1_POP_uri = "publisher1pop";
+	protected final static String publisher1_jvm1_MOP_uri = "publisher1mop";
 
 	// Références au composants, partagés entre deploy et shutdown
-	protected String uriBrokerURI;
-	protected String uriPublisherURI;
-	protected String uriSubscriberURI;
+	protected String comp_broker_jvm1_uri;
+	protected String comp_broker_jvm2_uri;
+
+	protected String comp_subscriber1_jvm1_uri;
+	protected String comp_subscriber1_jvm2_uri;
+
+	protected String comp_publisher1_jvm1_uri;
 
 	public DistributedCVM(String[] args, int xLayout, int yLayout) throws Exception {
 		super(args, xLayout, yLayout);
@@ -39,29 +53,45 @@ public class DistributedCVM extends AbstractDistributedCVM {
 
 	@Override
 	public void instantiateAndPublish() throws Exception {
-		if (thisJVMURI.equals(BROKER_JVM_URI)) {
-			this.uriBrokerURI = AbstractComponent.createComponent(Broker.class.getCanonicalName(),
-					new Object[] { BROKER_COMPONENT_URI, brokerMIP_uri, brokerMIP2_uri, brokerPIP_uri });
-			assert this.isDeployedComponent(this.uriBrokerURI);
 
-			this.toggleTracing(this.uriBrokerURI);
-			assert this.uriBrokerURI != null && this.uriSubscriberURI == null && this.uriPublisherURI == null;
+		if (thisJVMURI.equals(JVM1_URI)) {
+			// Broker
+			this.comp_broker_jvm1_uri = AbstractComponent.createComponent(Broker.class.getCanonicalName(),
+					new Object[] { BROKER_JVM1_COMPONENT_URI, broker_jvm1_MIP_uri, broker_jvm1_MIP2_uri,
+							broker_jvm1_PIP_uri, broker_jvm1_POP_uri, broker_jvm2_PIP_uri });
+			this.toggleTracing(this.comp_broker_jvm1_uri);
+			assert this.isDeployedComponent(comp_broker_jvm1_uri);
+			// Subscriber
+			this.comp_subscriber1_jvm1_uri = AbstractComponent.createComponent(Subscriber.class.getCanonicalName(),
+					new Object[] { SUBSCRIBER1_JVM1_COMPONENT_URI, subscriber1_jvm1_MOP_uri, broker_jvm1_MIP_uri });
+			this.toggleTracing(this.comp_subscriber1_jvm1_uri);
+			assert this.isDeployedComponent(this.comp_subscriber1_jvm1_uri);
+			// Publisher
+			this.comp_publisher1_jvm1_uri = AbstractComponent.createComponent(Publisher.class.getCanonicalName(),
+					new Object[] { PUBLISHER1_JVM1_COMPONENT_URI, publisher1_jvm1_POP_uri, publisher1_jvm1_MOP_uri,
+							broker_jvm1_PIP_uri, broker_jvm1_MIP2_uri });
+			this.toggleTracing(this.comp_publisher1_jvm1_uri);
+			assert this.isDeployedComponent(this.comp_publisher1_jvm1_uri);
 
-		} else if (thisJVMURI.equals(PUBLISHER_JVM_URI)) {
-			this.uriPublisherURI = AbstractComponent.createComponent(Publisher.class.getCanonicalName(), new Object[] {
-					PUBLISHER_COMPONENT_URI, publisherPOP_uri, publisherMOP_uri, brokerPIP_uri, brokerMIP2_uri });
-			assert this.isDeployedComponent(this.uriPublisherURI);
+			assert comp_broker_jvm1_uri != null && comp_subscriber1_jvm1_uri != null
+					&& comp_publisher1_jvm1_uri != null;
+			assert comp_broker_jvm2_uri == null && comp_subscriber1_jvm2_uri == null;
+		} else if (thisJVMURI.equals(JVM2_URI)) {
+			// Broker
+			this.comp_broker_jvm2_uri = AbstractComponent.createComponent(Broker.class.getCanonicalName(),
+					new Object[] { BROKER_JVM2_COMPONENT_URI, broker_jvm2_MIP_uri, broker_jvm2_MIP2_uri,
+							broker_jvm2_PIP_uri, broker_jvm2_POP_uri, broker_jvm1_PIP_uri });
+			this.toggleTracing(this.comp_broker_jvm2_uri);
+			assert this.isDeployedComponent(comp_broker_jvm2_uri);
+			// Subscriber
+			this.comp_subscriber1_jvm2_uri = AbstractComponent.createComponent(Subscriber.class.getCanonicalName(),
+					new Object[] { SUBSCRIBER1_JVM2_COMPONENT_URI, subscriber1_jvm2_MOP_uri, broker_jvm2_MIP_uri });
+			this.toggleTracing(this.comp_subscriber1_jvm2_uri);
+			assert this.isDeployedComponent(this.comp_subscriber1_jvm2_uri);
 
-			this.toggleTracing(this.uriPublisherURI);
-			assert this.uriBrokerURI == null && this.uriSubscriberURI == null && this.uriPublisherURI != null;
-
-		} else if (thisJVMURI.equals(SUBSCRIBER_JVM_URI)) {
-			this.uriSubscriberURI = AbstractComponent.createComponent(Subscriber.class.getCanonicalName(),
-					new Object[] { SUBSCRIBER_COMPONENT_URI, subscriberMOP_uri, brokerMIP_uri });
-			assert this.isDeployedComponent(this.uriSubscriberURI);
-
-			this.toggleTracing(this.uriSubscriberURI);
-			assert this.uriBrokerURI == null && this.uriSubscriberURI != null && this.uriPublisherURI == null;
+			assert comp_broker_jvm2_uri != null && comp_subscriber1_jvm2_uri != null;
+			assert comp_broker_jvm1_uri == null && comp_subscriber1_jvm1_uri == null
+					&& comp_publisher1_jvm1_uri == null;
 		} else {
 			System.out.println("Unknown JVM URI... " + thisJVMURI);
 		}
@@ -69,59 +99,16 @@ public class DistributedCVM extends AbstractDistributedCVM {
 		super.instantiateAndPublish();
 	}
 
-//	@Override
-//	public void interconnect() throws Exception, RemoteException {
-//		assert this.isIntantiatedAndPublished();
-//
-//		if (thisJVMURI.equals(BROKER_JVM_URI)) {
-//			assert this.uriBrokerURI != null && this.uriPublisherURI == null && this.uriSubscriberURI == null;
-//		} else if (thisJVMURI.equals(SUBSCRIBER_JVM_URI)) {
-//			this.doPortConnection(this.uriSubscriberURI, subscriberMOP_uri, brokerMIP_uri,
-//					ManagementConnector.class.getCanonicalName());
-//		} else if (thisJVMURI.equals(PUBLISHER_JVM_URI)) {
-//			this.doPortConnection(this.uriPublisherURI, publisherPOP_uri, brokerPIP_uri,
-//					PublicationConnector.class.getCanonicalName());
-//			this.doPortConnection(this.uriPublisherURI, publisherMOP_uri, brokerMIP2_uri,
-//					ManagementConnector.class.getCanonicalName());
-//		} else {
-//			System.out.println("Unknown JVM URI... " + thisJVMURI);
-//		}
-//
-//		super.interconnect();
-//	}
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#finalise()
-	 */
-	@Override
-	public void finalise() throws Exception {
-//
-//		if (thisJVMURI.equals(BROKER_JVM_URI)) {
-//			assert this.uriBrokerURI != null && this.uriSubscriberURI == null && this.uriPublisherURI == null;
-//			// nothing to be done on the provider side
-//		} else if (thisJVMURI.equals(SUBSCRIBER_JVM_URI)) {
-//			this.doPortDisconnection(this.uriSubscriberURI, subscriberMOP_uri);
-//		} else {
-//			this.doPortDisconnection(this.uriPublisherURI, publisherMOP_uri);
-//			this.doPortDisconnection(this.uriPublisherURI, publisherPOP_uri);
-//		}
-
-		super.finalise();
-	}
-
 	public static void main(String[] args) {
 		try {
 			DistributedCVM da = new DistributedCVM(args, 2, 5);
-			da.startStandardLifeCycle(10000L);
-			Thread.sleep(10000L);
+			da.startStandardLifeCycle(100000L);
+			Thread.sleep(100000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-//		finally {
-//			System.exit(0);
-//		}
 	}
 }
 //-----------------------------------------------------------------------------

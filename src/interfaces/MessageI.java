@@ -21,4 +21,8 @@ public interface MessageI extends Serializable {
 
 	Serializable getPayload() throws Exception;
 
+	MessageI addBroker(String broker_uri) throws Exception;
+
+	Boolean containsBroker(String broker_uri) throws Exception;
+
 }

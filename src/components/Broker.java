@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
+import connectors.PublicationConnector;
 import connectors.ReceptionConnector;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import interfaces.ManagementCI;
 import interfaces.ManagementImplementationI;
 import interfaces.MessageFilterI;
@@ -23,6 +26,7 @@ import interfaces.SubscriptionImplementationI;
 import message.Topic;
 import port.BrokerManagementInboundPort;
 import port.BrokerPublicationInboundPort;
+import port.BrokerPublicationOutboundPort;
 import port.BrokerReceptionOutboundPort;
 import utils.Log;
 
@@ -32,10 +36,12 @@ import utils.Log;
  * @author Bello Velly
  */
 
-@RequiredInterfaces(required = { ReceptionCI.class })
+@RequiredInterfaces(required = { ReceptionCI.class, PublicationCI.class })
 @OfferedInterfaces(offered = { ManagementCI.class, PublicationCI.class })
 public class Broker extends AbstractComponent
 		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
+
+	protected String myUri;
 
 	// Executor services uris
 	public static final String RECEPTION_EXECUTOR_URI = "reception";
@@ -46,6 +52,7 @@ public class Broker extends AbstractComponent
 	protected BrokerManagementInboundPort bmip;
 	protected BrokerManagementInboundPort bmip2;
 	protected BrokerPublicationInboundPort bpip;
+	protected BrokerPublicationOutboundPort bpop;
 
 	// verrou pour la Map topics
 	protected final ReentrantReadWriteLock lock;
@@ -53,6 +60,9 @@ public class Broker extends AbstractComponent
 	// Map<identifiant du topic, Topic>
 	protected Map<String, Topic> topics = new HashMap<>();
 
+	protected String bpip2URI; // pour transferer les publications vers un autre Broker
+
+	// Broker non connecté a un autre Broker
 	protected Broker(String uri, String bmipURI, String bmip2URI, String bpipURI) throws Exception {
 		super(uri, 1, 0);
 
@@ -63,6 +73,8 @@ public class Broker extends AbstractComponent
 		assert bmipURI != null;
 		assert bmip2URI != null;
 		assert bpipURI != null;
+
+		this.myUri = uri;
 
 		// Verrou pour la map, on permet plusieurs lectures simultanées, mais que une
 		// ecriture simultanée.
@@ -86,6 +98,47 @@ public class Broker extends AbstractComponent
 		this.bpip.publishPort();
 	}
 
+	// Broker connecté a un autre Broker
+	protected Broker(String uri, String bmipURI, String bmip2URI, String bpipURI, String bpopURI, String bpip2URI)
+			throws Exception {
+		super(uri, 1, 0);
+
+		this.tracer.setTitle(uri);
+		this.tracer.setRelativePosition(0, 4);
+
+		// Verifications
+		assert bmipURI != null;
+		assert bmip2URI != null;
+		assert bpipURI != null;
+		assert bpopURI != null;
+		assert bpip2URI != null;
+
+		// Verrou pour la map, on permet plusieurs lectures simultanées, mais que une
+		// ecriture simultanée.
+		// De plus, si un écriture à lieu, on interdit toute lecture tans que celle-ci
+		// n'est pas finie
+		this.lock = new ReentrantReadWriteLock();
+
+		// pool de threads pour l'envoie de messages vers des subscribers
+		this.createNewExecutorService(ENVOIE_EXECUTOR_URI, 4, false);
+		// pool de threads pour les requetes sur les ports entrant (management +
+		// messages reçus)
+		this.createNewExecutorService(RECEPTION_EXECUTOR_URI, 4, false);
+
+		this.bpip2URI = bpip2URI;
+
+		// creation des ports
+		int executorServiceIndex = this.getExecutorServiceIndex(RECEPTION_EXECUTOR_URI);
+		this.bmip = new BrokerManagementInboundPort(bmipURI, executorServiceIndex, this);
+		this.bmip.publishPort();
+		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, executorServiceIndex, this);
+		this.bmip2.publishPort();
+		this.bpip = new BrokerPublicationInboundPort(bpipURI, executorServiceIndex, this);
+		this.bpip.publishPort();
+		this.bpop = new BrokerPublicationOutboundPort(bpopURI, this);
+		this.bpop.localPublishPort();
+	}
+
 	/***********************************************************************
 	 * 
 	 * CYCLE DE VIE
@@ -93,7 +146,23 @@ public class Broker extends AbstractComponent
 	 ***********************************************************************/
 
 	@Override
+	public void start() throws ComponentStartException {
+		// Connection sur un autre broker
+		if (bpop != null)
+			try {
+				this.doPortConnection(bpop.getPortURI(), bpip2URI, PublicationConnector.class.getCanonicalName());
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new ComponentStartException("can't connect brokers");
+			}
+		super.start();
+	}
+
+	@Override
 	public void finalise() throws Exception {
+		if (bpop != null)
+			this.doPortDisconnection(bpop.getPortURI());
+
 		for (BrokerReceptionOutboundPort brop : brops)
 			this.doPortDisconnection(brop.getPortURI());
 		super.finalise();
@@ -111,6 +180,8 @@ public class Broker extends AbstractComponent
 			bmip2.unpublishPort();
 			removeOfferedInterface(ManagementCI.class);
 			bpip.unpublishPort();
+			if (bpop != null)
+				bpop.unpublishPort();
 			removeOfferedInterface(PublicationCI.class);
 
 		} catch (Exception e) {
@@ -131,6 +202,8 @@ public class Broker extends AbstractComponent
 			bmip2.unpublishPort();
 			removeOfferedInterface(ManagementCI.class);
 			bpip.unpublishPort();
+			if (bpop != null)
+				bpop.unpublishPort();
 			removeOfferedInterface(PublicationCI.class);
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
@@ -211,6 +284,38 @@ public class Broker extends AbstractComponent
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
 		Log.printAndLog(this, "broker reçoit, thread : " + Thread.currentThread().getId());
+
+		// si on est connecté a un autre Broker, on lui transmet les messages
+		if (bpop != null) {
+			// on envoie les message
+			if (ms.length > 0)
+				this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
+					try {
+						Log.printAndLog(this, "broker transmet, thread : " + Thread.currentThread().getId());
+						// on va d'abord modifié les message pour signalé qu'on les a déjà reçu
+						List<MessageI> new_ms = Arrays.asList(ms);
+						new_ms = new_ms.stream().filter(message -> {
+							try {
+								return !(message.containsBroker(this.myUri));
+							} catch (Exception e1) {
+								return false;
+							}
+						}).collect(Collectors.toList());
+						new_ms = new_ms.stream().map(message -> {
+							try {
+								return message.addBroker(this.myUri);
+							} catch (Exception e) {
+								e.printStackTrace();
+								return null;
+							}
+						}).collect(Collectors.toList());
+						bpop.publish(new_ms.toArray(new MessageI[] {}), topics);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+		}
+
 		// on créer les topic si nécéssaire
 		for (String topic : topics)
 			this.createTopic(topic);
