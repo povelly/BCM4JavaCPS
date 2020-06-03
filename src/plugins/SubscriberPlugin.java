@@ -10,8 +10,8 @@ import interfaces.MessageI;
 import interfaces.ReceptionCI;
 import interfaces.ReceptionImplementationI;
 import interfaces.SubscriptionImplementationI;
-import port.ManagementOutboundPort;
-import port.ReceptionInboundPort;
+import port.ManagementOutboundPortForPlugin;
+import port.ReceptionInboundPortForPlugin;
 
 /**
  * plugin server pour le subscriber permet la reception de message (serveur) et
@@ -24,11 +24,11 @@ public class SubscriberPlugin extends AbstractPlugin
 		implements ReceptionImplementationI, SubscriptionImplementationI, ManagementImplementationI {
 
 	private static final long serialVersionUID = 1L;
-	protected ReceptionInboundPort rip;
+	protected ReceptionInboundPortForPlugin rip;
 	protected String ripUri;
 
 	protected String mopUri;
-	protected ManagementOutboundPort mop;
+	protected ManagementOutboundPortForPlugin mop;
 
 	protected String mipUri;
 
@@ -58,10 +58,10 @@ public class SubscriberPlugin extends AbstractPlugin
 	@Override
 	public void initialise() throws Exception {
 		// Reception
-		this.rip = new ReceptionInboundPort(ripUri, this.getPluginURI(), this.owner);
+		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
 		this.rip.publishPort();
 		// Management
-		this.mop = new ManagementOutboundPort(mopUri, this.owner);
+		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
 		this.mop.localPublishPort();
 
 		// Connection sur management

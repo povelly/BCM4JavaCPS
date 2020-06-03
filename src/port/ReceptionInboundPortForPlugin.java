@@ -8,21 +8,21 @@ import interfaces.ReceptionCI;
 import interfaces.ReceptionImplementationI;
 
 /**
- * Port entrant pour l'interface ReceptionCI
+ * Port entrant de recepetion pour plugin
  * 
  * @author Bello Velly
  *
  */
-public class ReceptionInboundPort extends AbstractInboundPortForPlugin implements ReceptionCI {
+public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin implements ReceptionCI {
 
 	private static final long serialVersionUID = 1L;
 
-	public ReceptionInboundPort(String pluginURI, ComponentI owner) throws Exception {
+	public ReceptionInboundPortForPlugin(String pluginURI, ComponentI owner) throws Exception {
 		super(ReceptionCI.class, pluginURI, owner);
 		assert owner instanceof ReceptionImplementationI;
 	}
 
-	public ReceptionInboundPort(String uri, String pluginURI, ComponentI owner) throws Exception {
+	public ReceptionInboundPortForPlugin(String uri, String pluginURI, ComponentI owner) throws Exception {
 		super(uri, ReceptionCI.class, pluginURI, owner);
 		assert owner instanceof ReceptionImplementationI;
 	}

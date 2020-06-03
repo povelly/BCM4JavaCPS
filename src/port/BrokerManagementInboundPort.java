@@ -7,17 +7,17 @@ import interfaces.ManagementCI;
 import interfaces.MessageFilterI;
 
 /**
- * Port d'entrée pour l'interface composant ManagementCI
+ * Port d'entrée du Broker pour l'interface composant ManagementCI
  * 
  * @author Bello Velly
  *
  */
-public class ManagementInboundPort extends AbstractInboundPort implements ManagementCI {
+public class BrokerManagementInboundPort extends AbstractInboundPort implements ManagementCI {
 
 	private static final long serialVersionUID = 1L;
 	protected final int executorIndex;
 
-	public ManagementInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
+	public BrokerManagementInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
 		assert owner instanceof Broker;
 		this.executorIndex = executorIndex;

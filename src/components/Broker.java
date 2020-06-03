@@ -21,9 +21,9 @@ import interfaces.PublicationsImplementationI;
 import interfaces.ReceptionCI;
 import interfaces.SubscriptionImplementationI;
 import message.Topic;
-import port.ManagementInboundPort;
-import port.PublicationInboundPort;
-import port.ReceptionOutboundPort;
+import port.BrokerManagementInboundPort;
+import port.BrokerPublicationInboundPort;
+import port.BrokerReceptionOutboundPort;
 import utils.Log;
 
 /**
@@ -42,10 +42,10 @@ public class Broker extends AbstractComponent
 	public static final String ENVOIE_EXECUTOR_URI = "envoie";
 
 	// ports du composant
-	protected List<ReceptionOutboundPort> brops = new ArrayList<>();
-	protected ManagementInboundPort bmip;
-	protected ManagementInboundPort bmip2;
-	protected PublicationInboundPort bpip;
+	protected List<BrokerReceptionOutboundPort> brops = new ArrayList<>();
+	protected BrokerManagementInboundPort bmip;
+	protected BrokerManagementInboundPort bmip2;
+	protected BrokerPublicationInboundPort bpip;
 
 	// verrou pour la Map topics
 	protected final ReentrantReadWriteLock lock;
@@ -78,11 +78,11 @@ public class Broker extends AbstractComponent
 
 		// creation des ports
 		int executorServiceIndex = this.getExecutorServiceIndex(RECEPTION_EXECUTOR_URI);
-		this.bmip = new ManagementInboundPort(bmipURI, executorServiceIndex, this);
+		this.bmip = new BrokerManagementInboundPort(bmipURI, executorServiceIndex, this);
 		this.bmip.publishPort();
-		this.bmip2 = new ManagementInboundPort(bmip2URI, executorServiceIndex, this);
+		this.bmip2 = new BrokerManagementInboundPort(bmip2URI, executorServiceIndex, this);
 		this.bmip2.publishPort();
-		this.bpip = new PublicationInboundPort(bpipURI, executorServiceIndex, this);
+		this.bpip = new BrokerPublicationInboundPort(bpipURI, executorServiceIndex, this);
 		this.bpip.publishPort();
 	}
 
@@ -94,7 +94,7 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void finalise() throws Exception {
-		for (ReceptionOutboundPort brop : brops)
+		for (BrokerReceptionOutboundPort brop : brops)
 			this.doPortDisconnection(brop.getPortURI());
 		super.finalise();
 	}
@@ -102,7 +102,7 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
-			for (ReceptionOutboundPort brop : brops) {
+			for (BrokerReceptionOutboundPort brop : brops) {
 				brop.unpublishPort();
 			}
 			removeRequiredInterface(ReceptionCI.class);
@@ -122,7 +122,7 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		try {
-			for (ReceptionOutboundPort brop : brops) {
+			for (BrokerReceptionOutboundPort brop : brops) {
 				brop.unpublishPort();
 			}
 			removeRequiredInterface(ReceptionCI.class);
@@ -237,7 +237,7 @@ public class Broker extends AbstractComponent
 						for (MessageI m : ms)
 
 							// on cherche le port associé au subscriber
-							for (ReceptionOutboundPort brop : brops) {
+							for (BrokerReceptionOutboundPort brop : brops) {
 								try {
 									boolean urisEq = brop.getServerPortURI().equals(subscriber);
 									boolean filterOk = (this.topics.get(topic).getFilter(subscriber) == null
@@ -303,9 +303,9 @@ public class Broker extends AbstractComponent
 
 			// on créer un port sortant et le lie a celui du subscriber
 			try {
-				ReceptionOutboundPort brop = new ReceptionOutboundPort(this);
+				BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
 				boolean alreadyExists = false;
-				for (ReceptionOutboundPort port : brops) {
+				for (BrokerReceptionOutboundPort port : brops) {
 					if (port.getServerPortURI() != null && port.getServerPortURI().equals(inboundPortURI))
 						alreadyExists = true;
 				}
