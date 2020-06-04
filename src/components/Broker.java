@@ -147,7 +147,7 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void start() throws ComponentStartException {
-		// Connection sur un autre broker
+		// Connection sur un autre broker si nécéssaire
 		if (bpop != null)
 			try {
 				this.doPortConnection(bpop.getPortURI(), bpip2URI, PublicationConnector.class.getCanonicalName());
@@ -160,9 +160,10 @@ public class Broker extends AbstractComponent
 
 	@Override
 	public void finalise() throws Exception {
+		// Deconnection du port sur un autre Broker si nécéssaire
 		if (bpop != null)
 			this.doPortDisconnection(bpop.getPortURI());
-
+		// deconnection des ports vers les Subscriber
 		for (BrokerReceptionOutboundPort brop : brops)
 			this.doPortDisconnection(brop.getPortURI());
 		super.finalise();
@@ -171,11 +172,12 @@ public class Broker extends AbstractComponent
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
+			// Depublication du port sur un autre Broker si nécéssaire
 			for (BrokerReceptionOutboundPort brop : brops) {
 				brop.unpublishPort();
 			}
 			removeRequiredInterface(ReceptionCI.class);
-			// on dépublie les ports
+			// on dépublie les autres ports
 			bmip.unpublishPort();
 			bmip2.unpublishPort();
 			removeOfferedInterface(ManagementCI.class);
@@ -286,14 +288,19 @@ public class Broker extends AbstractComponent
 		Log.printAndLog(this, "broker reçoit, thread : " + Thread.currentThread().getId());
 
 		// si on est connecté a un autre Broker, on lui transmet les messages
+		// on enleve tout les messages qu'on a deja réçu une fois des messages à
+		// transmettre
+		// pour éviter un cycle de transmission (si on les à deja eu, ils sont deja
+		// passer
+		// par tout les autres Broker)
 		if (bpop != null) {
 			// on envoie les message
 			if (ms.length > 0)
 				this.runTask(ENVOIE_EXECUTOR_URI, owner -> {
 					try {
 						Log.printAndLog(this, "broker transmet, thread : " + Thread.currentThread().getId());
-						// on va d'abord modifié les message pour signalé qu'on les a déjà reçu
 						List<MessageI> new_ms = Arrays.asList(ms);
+						// on enlève les messages déjà reçu
 						new_ms = new_ms.stream().filter(message -> {
 							try {
 								return !(message.containsBroker(this.myUri));
@@ -301,6 +308,7 @@ public class Broker extends AbstractComponent
 								return false;
 							}
 						}).collect(Collectors.toList());
+						// on marque les autres comme deja reçu pour ce Broker
 						new_ms = new_ms.stream().map(message -> {
 							try {
 								return message.addBroker(this.myUri);
@@ -309,6 +317,7 @@ public class Broker extends AbstractComponent
 								return null;
 							}
 						}).collect(Collectors.toList());
+						// on transmet les messages
 						bpop.publish(new_ms.toArray(new MessageI[] {}), topics);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -320,10 +329,9 @@ public class Broker extends AbstractComponent
 		for (String topic : topics)
 			this.createTopic(topic);
 
-		// on publie les messages dans les topics
 		this.lock.writeLock().lock();
-
 		try {
+			// on publie les messages dans les topics
 			for (String topic : topics) {
 				for (MessageI m : ms)
 					this.topics.get(topic).addMessage(m);
@@ -406,7 +414,8 @@ public class Broker extends AbstractComponent
 			// on ajoute le subscriber au topic
 			topics.get(topic).addSubscription(inboundPortURI, null);
 
-			// on créer un port sortant et le lie a celui du subscriber
+			// on créer un port sortant et le lie a celui du subscriber si celui-ci n'existe
+			// pas déjà
 			try {
 				BrokerReceptionOutboundPort brop = new BrokerReceptionOutboundPort(this);
 				boolean alreadyExists = false;

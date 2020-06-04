@@ -50,8 +50,5 @@ public class CVM extends AbstractCVM {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-//		finally {
-//			System.exit(0);
-//		}
 	}
 }
