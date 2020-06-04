@@ -1,2 +1,0 @@
-#!/bin/bash
-java -cp 'jars/*' -Djava.security.manager -Djava.security.policy=dcvm.policy fr.sorbonne_u.components.registry.GlobalRegistry config.xml
