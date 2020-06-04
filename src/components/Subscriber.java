@@ -94,8 +94,8 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
-			Log.printAndLog(this, "Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
-					+ this.ripUri + "; message : " + m.getPayload());
+			Log.printAndLog(this,
+					"Message reçu, thread : " + Thread.currentThread().getId() + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,8 +105,8 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	public void acceptMessage(MessageI[] ms) {
 		try {
 			for (MessageI m : ms)
-				Log.printAndLog(this, "Message reçu, thread : " + Thread.currentThread().getId() + "; PortURI : "
-						+ this.ripUri + "; message : " + m.getPayload());
+				Log.printAndLog(this,
+						"Message reçu, thread : " + Thread.currentThread().getId() + "; message : " + m.getPayload());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

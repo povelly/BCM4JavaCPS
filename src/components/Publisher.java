@@ -15,6 +15,8 @@ import utils.Log;
 
 public class Publisher extends AbstractComponent {
 
+	protected String myURI;
+
 	protected PublisherClientPlugin publisherPlugin;
 
 	protected Publisher(String uri, String popURI, String mopURI, String pipURI, String mipURI) throws Exception {
@@ -26,6 +28,8 @@ public class Publisher extends AbstractComponent {
 		// verifications
 		assert pipURI != null;
 		assert mipURI != null;
+
+		this.myURI = uri;
 
 		// plugin
 		publisherPlugin = new PublisherClientPlugin(popURI, mopURI, pipURI, mipURI);
@@ -45,17 +49,22 @@ public class Publisher extends AbstractComponent {
 		// envoie 20 messages basics de tests
 		Thread.sleep(4000);
 		Log.printAndLog(this, "début envoie messages publisher");
-		for (int i = 0; i < 20; i++) {
-			publisherPlugin.publish(new Message(null, "msg_i_" + i), "topic2");
+		for (int i = 1; i <= 5; i++) {
+			publisherPlugin.publish(new Message(null, "publisher uri : " + this.myURI + ", content : msg_i_" + i),
+					"topic2");
 		}
 
 		// test d'autres scénarios
-		publisherPlugin.publish(new Message(null, "msg2"), new String[] { "topic2", "topic3" });
-		publisherPlugin.publish(new Message[] { new Message(null, "msg3"), new Message(null, "msg4") }, "topic2");
-		publisherPlugin.publish(new Message[] { new Message(null, "msg5"), new Message(null, "msg6") },
+		publisherPlugin.publish(new Message(null, "publisher uri : " + this.myURI + ", content : msg2"),
 				new String[] { "topic2", "topic3" });
-		publisherPlugin.publish(new Message(null, "msg7"), "topic1");
-		publisherPlugin.publish(new Message(null, "msg8"), "topic4");
+		publisherPlugin.publish(new Message[] { new Message(null, "publisher uri : " + this.myURI + ", content : msg3"),
+				new Message(null, "publisher uri : " + this.myURI + ", content : msg4") }, "topic2");
+		publisherPlugin.publish(
+				new Message[] { new Message(null, "publisher uri : " + this.myURI + ", content : msg5"),
+						new Message(null, "publisher uri : " + this.myURI + ", content : msg6") },
+				new String[] { "topic2", "topic3" });
+		publisherPlugin.publish(new Message(null, "publisher uri : " + this.myURI + ", content : msg7"), "topic1");
+		publisherPlugin.publish(new Message(null, "publisher uri : " + this.myURI + ", content : msg8"), "topic4");
 	}
 
 }

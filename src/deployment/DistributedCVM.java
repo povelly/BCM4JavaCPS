@@ -13,6 +13,7 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	protected static final String BROKER_JVM2_COMPONENT_URI = "broker_jvm2";
 
 	protected static final String PUBLISHER1_JVM1_COMPONENT_URI = "publisher1_jvm1";
+	protected static final String PUBLISHER1_JVM2_COMPONENT_URI = "publisher1_jvm2";
 
 	protected static final String SUBSCRIBER1_JVM1_COMPONENT_URI = "subscriber1_jvm1";
 	protected static final String SUBSCRIBER1_JVM2_COMPONENT_URI = "subscriber1_jvm2";
@@ -38,6 +39,9 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	protected final static String publisher1_jvm1_POP_uri = "publisher1pop";
 	protected final static String publisher1_jvm1_MOP_uri = "publisher1mop";
 
+	protected final static String publisher1_jvm2_POP_uri = "publisher2pop";
+	protected final static String publisher1_jvm2_MOP_uri = "publisher2mop";
+
 	// Références au composants, partagés entre deploy et shutdown
 	protected String comp_broker_jvm1_uri;
 	protected String comp_broker_jvm2_uri;
@@ -46,6 +50,7 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	protected String comp_subscriber1_jvm2_uri;
 
 	protected String comp_publisher1_jvm1_uri;
+	protected String comp_publisher1_jvm2_uri;
 
 	public DistributedCVM(String[] args, int xLayout, int yLayout) throws Exception {
 		super(args, xLayout, yLayout);
@@ -75,7 +80,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 
 			assert comp_broker_jvm1_uri != null && comp_subscriber1_jvm1_uri != null
 					&& comp_publisher1_jvm1_uri != null;
-			assert comp_broker_jvm2_uri == null && comp_subscriber1_jvm2_uri == null;
+			assert comp_broker_jvm2_uri == null && comp_subscriber1_jvm2_uri == null
+					&& comp_publisher1_jvm2_uri == null;
 		} else if (thisJVMURI.equals(JVM2_URI)) {
 			// Broker
 			this.comp_broker_jvm2_uri = AbstractComponent.createComponent(Broker.class.getCanonicalName(),
@@ -88,8 +94,15 @@ public class DistributedCVM extends AbstractDistributedCVM {
 					new Object[] { SUBSCRIBER1_JVM2_COMPONENT_URI, subscriber1_jvm2_MOP_uri, broker_jvm2_MIP_uri });
 			this.toggleTracing(this.comp_subscriber1_jvm2_uri);
 			assert this.isDeployedComponent(this.comp_subscriber1_jvm2_uri);
+			// Publisher
+			this.comp_publisher1_jvm2_uri = AbstractComponent.createComponent(Publisher.class.getCanonicalName(),
+					new Object[] { PUBLISHER1_JVM2_COMPONENT_URI, publisher1_jvm2_POP_uri, publisher1_jvm2_MOP_uri,
+							broker_jvm2_PIP_uri, broker_jvm2_MIP2_uri });
+			this.toggleTracing(this.comp_publisher1_jvm2_uri);
+			assert this.isDeployedComponent(this.comp_publisher1_jvm2_uri);
 
-			assert comp_broker_jvm2_uri != null && comp_subscriber1_jvm2_uri != null;
+			assert comp_broker_jvm2_uri != null && comp_subscriber1_jvm2_uri != null
+					&& comp_publisher1_jvm2_uri != null;
 			assert comp_broker_jvm1_uri == null && comp_subscriber1_jvm1_uri == null
 					&& comp_publisher1_jvm1_uri == null;
 		} else {
@@ -102,8 +115,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	public static void main(String[] args) {
 		try {
 			DistributedCVM da = new DistributedCVM(args, 2, 5);
-			da.startStandardLifeCycle(100000L);
-			Thread.sleep(100000L);
+			da.startStandardLifeCycle(20000L);
+			Thread.sleep(20000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
