@@ -17,6 +17,7 @@ public class TestTimeStamp {
 	public void isInitialized() {
 		TimeStamp t = new TimeStamp();
 		t.setTimeStamper("v");
+		t.setTime(1);
 		Assert.assertTrue(t.isInitialized());
 	}
 
