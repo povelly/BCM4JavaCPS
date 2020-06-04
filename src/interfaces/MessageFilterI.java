@@ -15,7 +15,7 @@ public interface MessageFilterI extends Serializable {
 	/**
 	 * 
 	 * @param m Message à filtrer
-	 * @return true si le message correspond au conditions, false sinon
+	 * @return true si le message correspond aux conditions, false sinon
 	 */
 	boolean filter(MessageI m);
 

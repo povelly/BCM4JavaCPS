@@ -17,16 +17,32 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructeur de ReceptionInboundPortForPlugin
+	 * 
+	 * @param pluginUri uri du plugin
+	 * @param owner     composant qui possède le port
+	 */
 	public ReceptionInboundPortForPlugin(String pluginURI, ComponentI owner) throws Exception {
 		super(ReceptionCI.class, pluginURI, owner);
 		assert owner instanceof ReceptionImplementationI;
 	}
 
+	/**
+	 * Constructeur de ReceptionInboundPortForPlugin
+	 * 
+	 * @param pluginUri uri du plugin
+	 * @param uri       uri du port
+	 * @param owner     composant qui possède le port
+	 */
 	public ReceptionInboundPortForPlugin(String uri, String pluginURI, ComponentI owner) throws Exception {
 		super(uri, ReceptionCI.class, pluginURI, owner);
 		assert owner instanceof ReceptionImplementationI;
 	}
 
+	/**
+	 * @see interfaces.ReceptionImplementationI#acceptMessage(MessageI)
+	 */
 	@Override
 	public void acceptMessage(MessageI m) throws Exception {
 		try {
@@ -45,6 +61,9 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 		}
 	}
 
+	/**
+	 * @see interfaces.ReceptionImplementationI#acceptMessage(MessageI[])
+	 */
 	@Override
 	public void acceptMessage(MessageI[] ms) throws Exception {
 		try {

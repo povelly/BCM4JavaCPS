@@ -17,6 +17,11 @@ import java.util.Set;
 import interfaces.MessageFilterI;
 import interfaces.MessageI;
 
+/**
+ * 
+ * @author Bello Velly
+ *
+ */
 public class Topic implements Serializable {
 
 	private static final long serialVersionUID = 1L;

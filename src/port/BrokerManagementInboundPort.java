@@ -15,8 +15,19 @@ import interfaces.MessageFilterI;
 public class BrokerManagementInboundPort extends AbstractInboundPort implements ManagementCI {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * index du pool de thread sur lequel on va éxécuté les appels
+	 */
 	protected final int executorIndex;
 
+	/**
+	 * Constructeur de BrokerManagementInboundPort
+	 * 
+	 * @param uri           uri du port
+	 * @param executorIndex @see {@link #executorIndex}
+	 * @param owner         composant qui possède le port
+	 */
 	public BrokerManagementInboundPort(String uri, int executorIndex, ComponentI owner) throws Exception {
 		super(uri, ManagementCI.class, owner);
 		assert owner instanceof Broker;
@@ -26,6 +37,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 	// TODO : revoir les appels synchrones / asynchrones (voir fiche prof sur
 	// soutenance mi semestre)
 
+	/**
+	 * @see interfaces.ManagementImplementationI#createTopic(String)
+	 */
 	@Override
 	public void createTopic(String topic) {
 		try {
@@ -35,6 +49,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#createTopics(String[])
+	 */
 	@Override
 	public void createTopics(String[] topics) {
 		try {
@@ -44,6 +61,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#destroyTopic(String)
+	 */
 	@Override
 	public void destroyTopic(String topic) {
 		try {
@@ -53,6 +73,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#isTopic(String)
+	 */
 	@Override
 	public boolean isTopic(String topic) {
 		try {
@@ -63,6 +86,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#getTopics()
+	 */
 	@Override
 	public String[] getTopics() {
 		try {
@@ -73,11 +99,17 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#getPublicationPortURI()
+	 */
 	@Override
 	public String getPublicationPortURI() throws Exception {
 		return this.getOwner().handleRequestSync(executorIndex, owner -> ((Broker) owner).getPublicationPortURI());
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String, String)
+	 */
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {
 		try {
@@ -87,6 +119,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String[], String)
+	 */
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
 		try {
@@ -96,6 +131,10 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String, MessageFilterI,
+	 *      String)
+	 */
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
 		try {
@@ -105,6 +144,10 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#modifyFilter(String,
+	 *      MessageFilterI, String)
+	 */
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		try {
@@ -115,6 +158,9 @@ public class BrokerManagementInboundPort extends AbstractInboundPort implements 
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#unsubscribe(String, String)
+	 */
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
 		try {
