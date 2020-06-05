@@ -92,7 +92,7 @@ public class Message implements MessageI, Serializable {
 	}
 
 	/**
-	 * @see interfaces.MessageI#getPayloard()
+	 * @see interfaces.MessageI#getPayload()
 	 */
 	@Override
 	public Serializable getPayload() {

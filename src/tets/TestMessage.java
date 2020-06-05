@@ -33,10 +33,10 @@ public class TestMessage {
 	/**
 	 * Test de la méthode getPayload
 	 * 
-	 * @see interfaces.Message#getPayload()
+	 * @see interfaces.MessageI#getPayload()
 	 */
 	@Test
-	public void getPlayload() {
+	public void getPayload() {
 		String playload = "p";
 		Message m = new Message(new Properties(), playload);
 		Assert.assertEquals(playload, m.getPayload());
@@ -67,7 +67,7 @@ public class TestMessage {
 	/**
 	 * Test de la méthode addBroker
 	 * 
-	 * @see interfaces.MessageI#addBroker()
+	 * @see interfaces.MessageI#addBroker(String)
 	 */
 	@Test
 	public void addBroker() {

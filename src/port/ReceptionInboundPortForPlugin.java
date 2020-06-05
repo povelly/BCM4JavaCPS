@@ -20,7 +20,7 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	/**
 	 * Constructeur de ReceptionInboundPortForPlugin
 	 * 
-	 * @param pluginUri uri du plugin
+	 * @param pluginURI uri du plugin
 	 * @param owner     composant qui possède le port
 	 */
 	public ReceptionInboundPortForPlugin(String pluginURI, ComponentI owner) throws Exception {
@@ -31,7 +31,7 @@ public class ReceptionInboundPortForPlugin extends AbstractInboundPortForPlugin 
 	/**
 	 * Constructeur de ReceptionInboundPortForPlugin
 	 * 
-	 * @param pluginUri uri du plugin
+	 * @param pluginURI uri du plugin
 	 * @param uri       uri du port
 	 * @param owner     composant qui possède le port
 	 */

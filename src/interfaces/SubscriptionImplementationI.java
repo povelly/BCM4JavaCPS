@@ -19,8 +19,8 @@ public interface SubscriptionImplementationI {
 	/**
 	 * abonne un Subscriber à plusieurs topics
 	 * 
-	 * @param topic          topics auquels le subscriber veut s'abonner
-	 * @param inboundPortURI URI sur lequel le subscriber reçevra les messages
+	 * @param topics         topics auquels le subscriber veut s'abonner
+	 * @param inboundPortURI uri sur lequel le subscriber reçevra les messages
 	 */
 	void subscribe(String[] topics, String inboundPortURI) throws Exception;
 
@@ -45,8 +45,8 @@ public interface SubscriptionImplementationI {
 	/**
 	 * Supprime la souscription d'un Subscriber à un topic
 	 * 
-	 * @param topic topic auquel on ne veut plus être abonné
-	 * @param URI   du port sur lequel on reçevait les messages
+	 * @param topic          topic auquel on ne veut plus être abonné
+	 * @param inboundPortURI du port sur lequel on reçevait les messages
 	 */
 	void unsubscribe(String topic, String inboundPortURI) throws Exception;
 
