@@ -41,28 +41,72 @@ import utils.Log;
 public class Broker extends AbstractComponent
 		implements ManagementImplementationI, SubscriptionImplementationI, PublicationsImplementationI {
 
+	/**
+	 * URI du composant
+	 */
 	protected String myUri;
 
 	// Executor services uris
+	/**
+	 * URI du pool de threads de reception
+	 */
 	public static final String RECEPTION_EXECUTOR_URI = "reception";
+	/**
+	 * URI du pool de threads d'envoie
+	 */
 	public static final String ENVOIE_EXECUTOR_URI = "envoie";
 
 	// ports du composant
+	/**
+	 * Ports de reception sortants sur lesquels on va envoyé les messages
+	 */
 	protected List<BrokerReceptionOutboundPort> brops = new ArrayList<>();
+
+	/**
+	 * Port de management entrant
+	 */
 	protected BrokerManagementInboundPort bmip;
+
+	/**
+	 * Deuxieme port de management entrant
+	 */
 	protected BrokerManagementInboundPort bmip2;
+
+	/**
+	 * Port de publication entrant
+	 */
 	protected BrokerPublicationInboundPort bpip;
+
+	/**
+	 * Port de publication sortant pour transmettre les messages à un autre Broker
+	 */
 	protected BrokerPublicationOutboundPort bpop;
 
-	// verrou pour la Map topics
+	/**
+	 * Verrou pour @see {@link #topics}
+	 */
 	protected final ReentrantReadWriteLock lock;
 
-	// Map<identifiant du topic, Topic>
+	/**
+	 * Topics du broker <identifiant du topic, topic>
+	 */
 	protected Map<String, Topic> topics = new HashMap<>();
 
-	protected String bpip2URI; // pour transferer les publications vers un autre Broker
+	/**
+	 * URI du port de Broker vers lequel les messages seront transférés
+	 */
+	protected String bpip2URI;
 
-	// Broker non connecté a un autre Broker
+	/**
+	 * Constructeur de Broker, à utilisé si on crée un Broker qui ne transmet pas
+	 * ses Messages à un autre Broker
+	 * 
+	 * @param uri      @see {@link #myUri}
+	 * @param bmipURI  uri du port entrant de management @see {@link #bmip}
+	 * @param bmip2URI uri du deuxieme port entrant de management @see
+	 *                 {@link #bmip2}
+	 * @param bpipURI  uri du port entrant de publication @see {@link #bpip}
+	 */
 	protected Broker(String uri, String bmipURI, String bmip2URI, String bpipURI) throws Exception {
 		super(uri, 1, 0);
 
@@ -98,7 +142,18 @@ public class Broker extends AbstractComponent
 		this.bpip.publishPort();
 	}
 
-	// Broker connecté a un autre Broker
+	/**
+	 * Constructeur de Broker, à utilisé si on crée un Broker qui transmet ses
+	 * Messages à un autre Broker
+	 * 
+	 * @param uri      @see {@link #myUri}
+	 * @param bmipURI  uri du port entrant de management @see {@link #bmip}
+	 * @param bmip2URI uri du deuxieme port entrant de management @see
+	 *                 {@link #bmip2}
+	 * @param bpipURI  uri du port entrant de publication @see {@link #bpip}
+	 * @param bpopURI  uri du port sortant de publication @see {@link #bpop}
+	 * @param bpip2URI @see {@link #bpip2URI}
+	 */
 	protected Broker(String uri, String bmipURI, String bmip2URI, String bpipURI, String bpopURI, String bpip2URI)
 			throws Exception {
 		super(uri, 1, 0);
@@ -145,6 +200,11 @@ public class Broker extends AbstractComponent
 	 * 
 	 ***********************************************************************/
 
+	/**
+	 * Connexion des ports
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#start()
+	 */
 	@Override
 	public void start() throws ComponentStartException {
 		// Connection sur un autre broker si nécéssaire
@@ -158,6 +218,11 @@ public class Broker extends AbstractComponent
 		super.start();
 	}
 
+	/**
+	 * Déconnexion des ports
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#finalise()
+	 */
 	@Override
 	public void finalise() throws Exception {
 		// Deconnection du port sur un autre Broker si nécéssaire
@@ -169,6 +234,11 @@ public class Broker extends AbstractComponent
 		super.finalise();
 	}
 
+	/**
+	 * Depublicaiton des ports / retrait des interfaces du composant
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#shutdown()
+	 */
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		try {
@@ -192,6 +262,11 @@ public class Broker extends AbstractComponent
 		super.shutdown();
 	}
 
+	/**
+	 * Depublicaiton des ports / retrait des interfaces du composant
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#shutdownNow()
+	 */
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		try {
@@ -219,6 +294,9 @@ public class Broker extends AbstractComponent
 	 * 
 	 ***********************************************************************/
 
+	/**
+	 * @see interfaces.ManagementImplementationI#createTopic(String)
+	 */
 	@Override
 	public void createTopic(String topic) {
 		this.lock.writeLock().lock();
@@ -230,6 +308,9 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#createTopics(String[])
+	 */
 	@Override
 	public void createTopics(String[] toCreate) {
 		this.lock.writeLock().lock();
@@ -243,6 +324,9 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#destroyTopic(String)
+	 */
 	@Override
 	public void destroyTopic(String topic) {
 		this.lock.writeLock().lock();
@@ -253,6 +337,9 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#isTopic(String)
+	 */
 	@Override
 	public boolean isTopic(String topic) {
 		boolean isTopic;
@@ -265,6 +352,9 @@ public class Broker extends AbstractComponent
 		return isTopic;
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#getTopics()
+	 */
 	@Override
 	public String[] getTopics() {
 		String[] sTopics;
@@ -278,11 +368,17 @@ public class Broker extends AbstractComponent
 		return sTopics;
 	}
 
+	/**
+	 * @see interfaces.ManagementImplementationI#getPublicationPortURI()
+	 */
 	@Override
 	public String getPublicationPortURI() throws Exception {
 		return bpip.getPortURI();
 	}
 
+	/**
+	 * @see interfaces.PublicationsImplementationI#publish(MessageI[], String[])
+	 */
 	@Override
 	public void publish(MessageI[] ms, String[] topics) {
 		Log.printAndLog(this, "broker reçoit, thread : " + Thread.currentThread().getId());
@@ -380,6 +476,9 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.PublicationsImplementationI#publish(MessageI, String)
+	 */
 	@Override
 	public void publish(MessageI m, String topic) {
 		MessageI[] ms = { m };
@@ -387,12 +486,18 @@ public class Broker extends AbstractComponent
 		publish(ms, topics);
 	}
 
+	/**
+	 * @see interfaces.PublicationsImplementationI#publish(MessageI, String[])
+	 */
 	@Override
 	public void publish(MessageI m, String[] topics) {
 		MessageI[] ms = { m };
 		publish(ms, topics);
 	}
 
+	/**
+	 * @see interfaces.PublicationsImplementationI#publish(MessageI[], String)
+	 */
 	@Override
 	public void publish(MessageI[] ms, String topic) {
 		String[] topics = { topic };
@@ -400,8 +505,7 @@ public class Broker extends AbstractComponent
 	}
 
 	/**
-	 * Quand quelqu'un souscrit, on créer un port pour pouvoir contacter le
-	 * subscriber apres
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String, String)
 	 */
 	@Override
 	public void subscribe(String topic, String inboundPortURI) {
@@ -436,18 +540,29 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String[], String)
+	 */
 	@Override
 	public void subscribe(String[] topics, String inboundPortURI) {
 		for (String topic : topics)
 			subscribe(topic, inboundPortURI);
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#subscribe(String, MessageFilterI,
+	 *      String)
+	 */
 	@Override
 	public void subscribe(String topic, MessageFilterI filter, String inboundPortURI) {
 		subscribe(topic, inboundPortURI);
 		modifyFilter(topic, filter, inboundPortURI);
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#modifyFilter(String,
+	 *      MessageFilterI, String)
+	 */
 	@Override
 	public void modifyFilter(String topic, MessageFilterI newFilter, String inboundPortURI) {
 		// on recupère le topic
@@ -470,6 +585,9 @@ public class Broker extends AbstractComponent
 		}
 	}
 
+	/**
+	 * @see interfaces.SubscriptionImplementationI#unsubscribe(String, String)
+	 */
 	@Override
 	public void unsubscribe(String topic, String inboundPortURI) {
 		Topic t;

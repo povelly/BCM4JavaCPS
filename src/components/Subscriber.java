@@ -8,7 +8,7 @@ import plugins.SubscriberPlugin;
 import utils.Log;
 
 /**
- * Classe representant le composant souscriveur
+ * Classe representant le composant souscripteur
  * 
  * @author Bello Velly
  *
@@ -16,10 +16,24 @@ import utils.Log;
 
 public class Subscriber extends AbstractComponent implements ReceptionImplementationI {
 
+	/**
+	 * Plugin du souscripteur
+	 */
 	protected SubscriberPlugin subscriberPlugin;
+
+	/**
+	 * URI du port de reception du souscripteur
+	 */
 	protected String ripUri;
 
-	// TODO verif les histoires d'uris, surtout ripUri
+	/**
+	 * Constructeur de Subscriber
+	 * 
+	 * @param uri          uri du composant
+	 * @param mopUri       uri du port de management sortant du composant
+	 * @param mipServerUri uri du port sur lequel le port sortant de management sera
+	 *                     connecté
+	 */
 	protected Subscriber(String uri, String mopUri, String mipServerUri) throws Exception {
 		super(uri, 4, 1);
 
@@ -42,6 +56,11 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	 * 
 	 ***********************************************************************/
 
+	/**
+	 * Scénario de test
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#execute()
+	 */
 	@Override
 	public void execute() throws Exception {
 		super.execute();
@@ -91,6 +110,9 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 	 * 
 	 ***********************************************************************/
 
+	/**
+	 * @see interfaces.ReceptionImplementationI#acceptMessage(MessageI)
+	 */
 	@Override
 	public void acceptMessage(MessageI m) {
 		try {
@@ -101,6 +123,9 @@ public class Subscriber extends AbstractComponent implements ReceptionImplementa
 		}
 	}
 
+	/**
+	 * @see interfaces.ReceptionImplementationI#acceptMessage(MessageI[])
+	 */
 	@Override
 	public void acceptMessage(MessageI[] ms) {
 		try {

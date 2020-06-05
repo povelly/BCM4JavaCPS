@@ -15,6 +15,11 @@ import message.Topic;
  */
 public class TestTopic {
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.Topic#addSubscription(String, MessageFilterI)
+	 */
 	@Test
 	public void addSubscription() {
 		Topic t = new Topic();
@@ -23,6 +28,11 @@ public class TestTopic {
 		Assert.assertTrue(t.getSubscribers().contains(subscriber));
 	}
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.Topic#removeSubscriber(String)
+	 */
 	@Test
 	public void removeSubscriber() {
 		Topic t = new Topic();
@@ -32,6 +42,11 @@ public class TestTopic {
 		Assert.assertTrue(!t.getSubscribers().contains(subscriber));
 	}
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.Topic#getFilter(String)
+	 */
 	@Test
 	public void getFilter() {
 		Topic t = new Topic();
@@ -47,6 +62,11 @@ public class TestTopic {
 		Assert.assertEquals(filter, t.getFilter(subscriber));
 	}
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.Topic#updateFilter(String, MessageFilterI)
+	 */
 	@Test
 	public void updateFilter() {
 		Topic t = new Topic();

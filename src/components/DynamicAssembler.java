@@ -14,7 +14,8 @@ import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
 import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPort;
 
 /**
- * Class reprensentant l'assembleur dynamique pour les composants
+ * Class reprensentant l'assembleur dynamique pour les composants, exemple CVM
+ * non distribuée
  * 
  * @author Bello Velly
  *
@@ -22,24 +23,70 @@ import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPo
 @RequiredInterfaces(required = { DynamicComponentCreationI.class })
 public class DynamicAssembler extends AbstractComponent {
 
+	/**
+	 * URI du composant Broker
+	 */
 	protected static final String BROKER_COMPONENT_URI = "my-URI-broker";
+
+	/**
+	 * URI du composant Publisher
+	 */
 	protected static final String PUBLISHER_COMPONENT_URI = "my-URI-publisher";
+
+	/**
+	 * URI du composant Subscriber
+	 */
 	protected static final String SUBSCRIBER_COMPONENT_URI = "my-URI-subscriber";
 
+	/**
+	 * Préfix d'URI
+	 */
 	protected static final String PROVIDED_URI_PREFIX = "generated-URI-";
 
+	/**
+	 * Contient les URIs des composants déployés
+	 */
 	protected Set<String> deployerURISet;
 
-	// DynamicComponentCreation ports
+	/**
+	 * Port de creation de composant pour Subscriber
+	 */
 	protected DynamicComponentCreationOutboundPort portToSubscriberJVM;
+
+	/**
+	 * Port de creation de composant pour Broker
+	 */
 	protected DynamicComponentCreationOutboundPort portToBrokerJVM;
+
+	/**
+	 * Port de creation de composant pour Publisher
+	 */
 	protected DynamicComponentCreationOutboundPort portToPublisherJVM;
 
 	// JVMURIs
+
+	/**
+	 * URI de la jvm du subscriber
+	 */
 	protected String subscriberJVMURI;
+
+	/**
+	 * URI de la jvm du broker
+	 */
 	protected String brokerJVMURI;
+
+	/**
+	 * URI de la jvm du publisher
+	 */
 	protected String publisherJVMURI;
 
+	/**
+	 * constructeur de DynamicAssembler
+	 * 
+	 * @param subscriberJVMURI @see {@link #subscriberJVMURI}
+	 * @param brokerJVMURI     @see {@link #brokerJVMURI}
+	 * @param publisherJVMURI  @see {@link #publisherJVMURI}
+	 */
 	protected DynamicAssembler(String subscriberJVMURI, String brokerJVMURI, String publisherJVMURI) {
 		super(1, 0);
 		this.subscriberJVMURI = subscriberJVMURI;
@@ -47,6 +94,11 @@ public class DynamicAssembler extends AbstractComponent {
 		this.publisherJVMURI = publisherJVMURI;
 	}
 
+	/**
+	 * Création / Publication / Connexion des ports pour creation des composants
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#start()
+	 */
 	@Override
 	public void start() throws ComponentStartException {
 		super.start();
@@ -77,6 +129,11 @@ public class DynamicAssembler extends AbstractComponent {
 		}
 	}
 
+	/**
+	 * Creation des composants
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#execute()
+	 */
 	@Override
 	public void execute() throws Exception {
 		super.execute();
@@ -112,6 +169,11 @@ public class DynamicAssembler extends AbstractComponent {
 		portToPublisherJVM.executeComponent(publisherUri);
 	}
 
+	/**
+	 * Deconnection des ports de creation des composants
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#finalise()
+	 */
 	@Override
 	public void finalise() throws Exception {
 		// on deconnecte les ports
@@ -127,6 +189,11 @@ public class DynamicAssembler extends AbstractComponent {
 		super.finalise();
 	}
 
+	/**
+	 * Dépublication des ports pour creation des composants
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#shutdown()
+	 */
 	@Override
 	public void shutdown() throws ComponentShutdownException {
 		// on depublie les ports
@@ -140,6 +207,11 @@ public class DynamicAssembler extends AbstractComponent {
 		super.shutdown();
 	}
 
+	/**
+	 * Dépublication des ports pour creation des composants
+	 * 
+	 * @see fr.sorbonne_u.components.AbstractComponent#shutdownNow()
+	 */
 	@Override
 	public void shutdownNow() throws ComponentShutdownException {
 		/// on depublie les ports

@@ -18,6 +18,11 @@ import message.Properties;
  */
 public class TestMessage {
 
+	/**
+	 * Test de la méthode getProperties
+	 * 
+	 * @see interfaces.MessageI#getProperties()
+	 */
 	@Test
 	public void getProperties() {
 		Properties properties = new Properties();
@@ -25,6 +30,11 @@ public class TestMessage {
 		Assert.assertEquals(properties, m.getProperties());
 	}
 
+	/**
+	 * Test de la méthode getPayload
+	 * 
+	 * @see interfaces.Message#getPayload()
+	 */
 	@Test
 	public void getPlayload() {
 		String playload = "p";
@@ -32,18 +42,33 @@ public class TestMessage {
 		Assert.assertEquals(playload, m.getPayload());
 	}
 
+	/**
+	 * Test de la méthode getTimeStamp
+	 * 
+	 * @see interfaces.MessageI#getTimeStamp()
+	 */
 	@Test
 	public void getTimeStamp() {
 		Message m = new Message(new Properties(), "");
 		Assert.assertNotNull(m.getTimeStamp());
 	}
 
+	/**
+	 * Test de la méthode getUri
+	 * 
+	 * @see interfaces.MessageI#getURI()
+	 */
 	@Test
 	public void getUri() {
 		Message m = new Message(new Properties(), "");
 		Assert.assertNotNull(m.getURI());
 	}
 
+	/**
+	 * Test de la méthode addBroker
+	 * 
+	 * @see interfaces.MessageI#addBroker()
+	 */
 	@Test
 	public void addBroker() {
 		MessageI m = new Message(null, "");
@@ -57,6 +82,11 @@ public class TestMessage {
 		}
 	}
 
+	/**
+	 * Test de la méthode containsBroker
+	 * 
+	 * @see interfaces.MessageI#containsBroker(String)
+	 */
 	@Test
 	public void containsBroker() {
 		MessageI m = new Message(null, "");

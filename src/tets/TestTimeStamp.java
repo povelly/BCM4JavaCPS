@@ -13,6 +13,11 @@ import message.TimeStamp;
  */
 public class TestTimeStamp {
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.TimeStamp#isInitialized()
+	 */
 	@Test
 	public void isInitialized() {
 		TimeStamp t = new TimeStamp();
@@ -21,6 +26,12 @@ public class TestTimeStamp {
 		Assert.assertTrue(t.isInitialized());
 	}
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.TimeStamp#setTime(long)
+	 * @see message.TimeStamp#getTime()
+	 */
 	@Test
 	public void time() {
 		TimeStamp t = new TimeStamp();
@@ -28,6 +39,12 @@ public class TestTimeStamp {
 		Assert.assertEquals(1, t.getTime());
 	}
 
+	/**
+	 * Test pour
+	 * 
+	 * @see message.TimeStamp#setTimeStamper(String)
+	 * @see message.TimeStamp#getTimeStamper()
+	 */
 	@Test
 	public void timeStamper() {
 		TimeStamp t = new TimeStamp();
