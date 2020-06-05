@@ -221,8 +221,8 @@ public class DistributedCVM extends AbstractDistributedCVM {
 	public static void main(String[] args) {
 		try {
 			DistributedCVM da = new DistributedCVM(args, 2, 5);
-			da.startStandardLifeCycle(20000L);
-			Thread.sleep(20000L);
+			da.startStandardLifeCycle(30000L);
+			Thread.sleep(30000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();

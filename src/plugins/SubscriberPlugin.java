@@ -71,7 +71,7 @@ public class SubscriberPlugin extends AbstractPlugin
 	 ***********************************************************************/
 
 	/**
-	 * Installe le plugin, publie ses ports et ajoute ses interfaces.
+	 * Installe le plugin et ajoute ses interfaces.
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#installOn(ComponentI)
 	 */
@@ -79,23 +79,27 @@ public class SubscriberPlugin extends AbstractPlugin
 	public void installOn(ComponentI owner) throws Exception {
 		super.installOn(owner);
 		// Reception : serveur
-		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
-		this.rip.publishPort();
 		assert owner instanceof ReceptionImplementationI;
 		this.addOfferedInterface(ReceptionCI.class);
 		// Management : client
-		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
-		this.mop.localPublishPort();
 		this.addRequiredInterface(ManagementCI.class);
+
 	}
 
 	/**
-	 * Connecte les ports
+	 * Publie et connecte les ports
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#initialise()
 	 */
 	@Override
 	public void initialise() throws Exception {
+		// Reception
+		this.rip = new ReceptionInboundPortForPlugin(ripUri, this.getPluginURI(), this.owner);
+		this.rip.publishPort();
+		// Management
+		this.mop = new ManagementOutboundPortForPlugin(mopUri, this.owner);
+		this.mop.localPublishPort();
+
 		// Connection sur management
 		this.owner.doPortConnection(mop.getPortURI(), mipUri, ManagementConnector.class.getCanonicalName());
 
